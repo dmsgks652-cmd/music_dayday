@@ -749,14 +749,17 @@ class RecorderApp {
 
     // 4. 구글 스프레드시트 연동이 설정되어 있다면 비동기 전송
     if (this.appsScriptUrl) {
-      this.sendRecordToSheet(newRecord);
+      const sent = await this.sendRecordToSheet(newRecord);
+      if (!sent) this.showToast('시트 전송 실패: 이 기기에 기록을 보관했습니다. 나중에 다시 동기화하세요.', 'error');
+    } else {
+      this.showToast('구글 시트 미연결: 이 기기에만 저장되었습니다.', 'info');
     }
 
     // 5. 완료 화면으로 이동
     setTimeout(() => {
       this.renderCompleteView(newRecord);
       this.showView('complete');
-      this.showToast('연습 기록이 안전하게 저장되었어요! 🎉', 'success');
+      this.showToast('연습 기록이 이 기기에 저장되었어요! 🎉', 'success');
     }, 400);
   }
 
@@ -1420,7 +1423,7 @@ class RecorderApp {
       this.appsScriptUrl = url;
       localStorage.setItem('recorder_apps_script_url', url);
       this.updateSheetStatusBadge();
-      this.showToast('구글 시트 연동 설정이 성공적으로 저장되었습니다! 🎉', 'success');
+      this.showToast('연동 주소가 저장되었습니다. 실제 기록 저장 여부는 시트에서 확인해주세요.', 'info');
     } catch (err) {
       console.warn('Sheet ping warning:', err);
       // fallback으로 저장
@@ -1431,63 +1434,44 @@ class RecorderApp {
     }
   }
 
-  // 단일 연습 기록 시트 전송
-  async sendRecordToSheet(record) {
-    if (!this.appsScriptUrl) return;
+  // Apps Script는 cross-origin POST 응답에 CORS 헤더를 제공하지 않으므로
+  // no-cors로 전송합니다. opaque 응답은 저장 성공을 증명하지 않습니다.
+  async postToSheet(action, payload) {
+    if (!this.appsScriptUrl) return false;
     try {
       await fetch(this.appsScriptUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({
-          action: 'saveRecord',
-          payload: record
-        })
-      });
-    } catch (e) {
-      console.warn('Apps Script post failed, stored locally:', e);
-    }
-  }
-
-  // 액션별 시트 전송
-  async sendActionToSheet(action, payload) {
-    if (!this.appsScriptUrl) return;
-    try {
-      await fetch(this.appsScriptUrl, {
-        method: 'POST',
+        method: 'POST', mode: 'no-cors',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify({ action, payload })
       });
-    } catch (e) {
-      console.warn('Apps Script action failed:', action, e);
+      console.info('시트 전송 요청 완료(저장 확인 아님):', action);
+      return true;
+    } catch (error) {
+      console.error('시트 전송 요청 실패:', action, error);
+      return false;
     }
   }
 
-  // 전체 데이터 수동 동기화
+  async sendRecordToSheet(record) {
+    return this.postToSheet('saveRecord', record);
+  }
+
+  async sendActionToSheet(action, payload) {
+    return this.postToSheet(action, payload);
+  }
+
   async syncAllDataWithSheet() {
     if (!this.appsScriptUrl) {
       this.showToast('먼저 Google Apps Script URL을 입력해주세요.', 'error');
       return;
     }
-
-    this.showToast('전체 데이터를 구글 시트로 동기화하는 중...', 'info');
-    try {
-      await fetch(this.appsScriptUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({
-          action: 'syncAll',
-          payload: {
-            students: this.students,
-            songs: this.songs,
-            records: this.records
-          }
-        })
-      });
-      this.showToast('동기화가 완료되었습니다! 구글 시트를 확인해보세요.', 'success');
-    } catch (e) {
-      console.error('Sync failed:', e);
-      this.showToast('동기화 중 오류가 발생했습니다. Apps Script 권한을 확인해주세요.', 'error');
-    }
+    this.showToast('전체 기록 전송 중...', 'info');
+    const sent = await this.postToSheet('syncAll', {
+      students: this.students, songs: this.songs, records: this.records
+    });
+    this.showToast(sent
+      ? '전송 요청을 마쳤습니다. 실제 저장 여부는 구글 시트에서 확인해주세요.'
+      : '전송 실패: 기록은 이 기기에 남아 있습니다.', sent ? 'info' : 'error');
   }
 
   // ==========================================
