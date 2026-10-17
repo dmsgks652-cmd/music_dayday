@@ -10,6 +10,43 @@ function doGet(e) {
       .setMimeType(ContentService.MimeType.JSON);
   }
   
+  if (action === 'getRecords') {
+    var callback = String(e.parameter.callback || '');
+    if (!/^recorderCallback_[A-Za-z0-9_]+$/.test(callback)) {
+      return ContentService.createTextOutput(JSON.stringify({status:'error',message:'Invalid callback'})).setMimeType(ContentService.MimeType.JSON);
+    }
+    var result;
+    try {
+      var ss = SpreadsheetApp.getActiveSpreadsheet();
+      var teacher = e.parameter.teacher === '1';
+      var pin = String(e.parameter.pin || '');
+      var studentId = String(e.parameter.studentId || '');
+      var allowed = false;
+      if (teacher) {
+        var teacherPin = PropertiesService.getScriptProperties().getProperty('TEACHER_READ_PIN');
+        allowed = !!teacherPin && teacherPin.length >= 8 && pin === teacherPin;
+      } else if (studentId && pin) {
+        var students = ss.getSheetByName('학생명단');
+        if (students && students.getLastRow() > 1) {
+          var studentRows = students.getRange(2, 1, students.getLastRow()-1, 5).getDisplayValues();
+          allowed = studentRows.some(function(row) { return row[0] === studentId && row[4] === pin && pin !== '0000'; });
+        }
+      }
+      if (!allowed) throw new Error('조회 권한이 없습니다. 학생 확인코드 또는 교사 조회 비밀번호를 확인하세요.');
+      var sheet = ss.getSheetByName('연습기록');
+      var records = [];
+      if (sheet && sheet.getLastRow() > 1) {
+        var rows = sheet.getRange(2, 1, sheet.getLastRow()-1, 10).getDisplayValues();
+        rows.forEach(function(r) {
+          if (!teacher && r[2] !== studentId) return;
+          records.push({id:r[0],createdAt:r[1],dateOnly:r[1].slice(0,10),studentId:r[2],songTitle:r[3],focusArea:r[4],count:Number(r[5])||0,selfEval:r[6],comment:r[7],teacherFeedback:r[8],feedbackConfirmed:r[9]==='확인완료'});
+        });
+      }
+      result = {status:'success',records:records};
+    } catch (error) { result = {status:'error',message:String(error.message || error)}; }
+    return ContentService.createTextOutput(callback + '(' + JSON.stringify(result).replace(/</g,'\\u003c') + ');').setMimeType(ContentService.MimeType.JAVASCRIPT);
+  }
+
   return ContentService.createTextOutput(JSON.stringify({ status: 'ready' }))
     .setMimeType(ContentService.MimeType.JSON);
 }

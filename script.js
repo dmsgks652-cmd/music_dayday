@@ -377,6 +377,50 @@ class RecorderApp {
     this.showView('start');
   }
 
+  // JSONP is needed because Apps Script ContentService does not expose CORS headers.
+  // Never expose all student records through an unauthenticated public endpoint.
+  fetchSheetRecords(studentId, pin, teacher = false) {
+    return new Promise((resolve, reject) => {
+      if (!this.appsScriptUrl) { resolve([]); return; }
+      const callback = 'recorderCallback_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+      const script = document.createElement('script');
+      const timeout = setTimeout(() => finish(new Error('시트 응답 시간 초과')), 12000);
+      const finish = (error, data) => {
+        clearTimeout(timeout);
+        delete window[callback];
+        script.remove();
+        error ? reject(error) : resolve(data);
+      };
+      window[callback] = (response) => {
+        if (!response || response.status !== 'success') finish(new Error(response?.message || '시트 조회 실패'));
+        else finish(null, response.records || []);
+      };
+      const params = new URLSearchParams({action:'getRecords', callback, pin:String(pin || '')});
+      if (!teacher) params.set('studentId', studentId);
+      else params.set('teacher', '1');
+      script.onerror = () => finish(new Error('시트 스크립트 로딩 실패'));
+      script.src = this.appsScriptUrl + '?' + params.toString();
+      document.head.appendChild(script);
+    });
+  }
+
+  async refreshSheetRecords(studentId, pin, teacher = false) {
+    if (!this.appsScriptUrl) return;
+    try {
+      const incoming = await this.fetchSheetRecords(studentId, pin, teacher);
+      const merged = new Map(this.records.map(r => [String(r.id), r]));
+      incoming.forEach(r => merged.set(String(r.id), r));
+      this.records = [...merged.values()];
+      this.saveStorage('recorder_records', this.records);
+      if (this.currentStudent) this.renderStudentHome();
+      if (this.isTeacher) this.renderTeacherDashboard();
+      if (this.views.studentGrowth.classList.contains('active')) this.openGrowthView();
+    } catch (error) {
+      console.warn('시트 기록 조회 실패:', error);
+      this.showToast('시트 기록 불러오기 실패: ' + error.message, 'error');
+    }
+  }
+
   // 뷰 전환
   showView(viewName) {
     Object.keys(this.views).forEach(key => {
@@ -495,6 +539,7 @@ class RecorderApp {
 
     this.renderStudentHome();
     this.showView('studentHome');
+    this.refreshSheetRecords(student.id, student.pin);
 
     if (showWelcomeToast) {
       this.showToast(`환영해요, ${student.name} 학생! 🎵`, 'success');
@@ -516,6 +561,7 @@ class RecorderApp {
       this.teacherPinInput.value = '';
       this.renderTeacherDashboard();
       this.showView('teacherDashboard');
+      this.refreshSheetRecords('', enteredPin, true);
       this.showToast('선생님 모드로 접속하였습니다.', 'success');
     } else {
       this.showToast('선생님 비밀번호가 일치하지 않습니다. (기본: 1234)', 'error');
@@ -1423,7 +1469,7 @@ class RecorderApp {
       this.appsScriptUrl = url;
       localStorage.setItem('recorder_apps_script_url', url);
       this.updateSheetStatusBadge();
-      this.showToast('연동 주소가 저장되었습니다. 실제 기록 저장 여부는 시트에서 확인해주세요.', 'info');
+      this.showToast('연동 주소가 저장되었습니다. 다시 로그인하면 시트 기록을 불러옵니다.', 'info');
     } catch (err) {
       console.warn('Sheet ping warning:', err);
       // fallback으로 저장
