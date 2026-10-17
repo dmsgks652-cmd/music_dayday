@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>리코더 성장 일지 - 🎵 나의 리코더 연습 기록</title>
+  <meta name="description" content="초등학생 리코더 연습 기록 및 성장 과정을 시각화하고 교사와 공유하는 웹앱">
+  <meta property="og:title" content="리코더 성장 일지">
+  <meta property="og:description" content="초등학생 리코더 연습 기록 및 성장 과정을 시각화하고 교사와 공유하는 웹앱">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div id="app" class="app-container">
+    <!-- 상단 글로벌 헤더 -->
+    <header class="app-header">
+      <div class="header-logo" id="headerLogoBtn" role="button" tabindex="0">
+        <span class="logo-icon">🎵</span>
+        <div class="logo-text">
+          <h1>리코더 성장 일지</h1>
+          <span class="logo-sub">나의 즐거운 음악 여행</span>
+        </div>
+      </div>
+      <div class="header-user" id="headerUserArea">
+        <div class="user-badge" id="currentUserBadge" style="display: none;">
+          <span class="badge-role" id="badgeRoleText">학생</span>
+          <span class="badge-name" id="badgeNameText">홍길동</span>
+        </div>
+        <button type="button" class="btn btn-sm btn-ghost" id="logoutBtn" style="display: none;">
+          나가기
+        </button>
+      </div>
+    </header>
+
+    <!-- 메인 컨텐츠 영역 (뷰 전환) -->
+    <main class="main-content">
+
+      <!-- ================= 1. 시작 화면 ================= -->
+      <section id="view-start" class="view active">
+        <div class="welcome-hero">
+          <div class="hero-bubble">🎶 삐뽀삐뽀~ 즐겁게 불고 쑥쑥 자라요!</div>
+          <h2 class="hero-title">오늘은 어떤 곡을 연습해볼까요?</h2>
+          <p class="hero-desc">나의 연습 과정을 매일 1분 만에 쏙! 기록하고 성장을 지켜보세요.</p>
+        </div>
+
+        <div class="mode-select-grid">
+          <!-- 학생 시작 카드 -->
+          <div class="mode-card student-card">
+            <div class="card-icon">🎒</div>
+            <h3>학생으로 시작하기</h3>
+            <p>내 학급과 번호를 선택하고 오늘 연습을 시작해요.</p>
+            
+            <form id="studentLoginForm" class="login-form">
+              <div class="form-row">
+                <div class="form-group flex-1">
+                  <label for="selectClass">학급 선택</label>
+                  <select id="selectClass" class="form-select" required>
+                    <option value="">학급을 고르세요</option>
+                  </select>
+                </div>
+                <div class="form-group flex-1">
+                  <label for="selectStudentNumber">번호 선택</label>
+                  <select id="selectStudentNumber" class="form-select" disabled required>
+                    <option value="">번호를 고르세요</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="student-preview-box" id="studentPreviewBox" style="display: none;">
+                <span class="preview-label">학생 이름:</span>
+                <span class="preview-name" id="studentPreviewName">-</span>
+              </div>
+
+              <div class="form-group" id="studentPinGroup" style="display: none;">
+                <label for="studentPinInput">
+                  확인 번호 (4자리)
+                  <span class="label-hint">처음 접속 시 기본값: 0000</span>
+                </label>
+                <input type="password" id="studentPinInput" class="form-input text-center tracking-widest" maxlength="4" placeholder="0000" inputmode="numeric">
+              </div>
+
+              <div class="form-check" id="rememberTabletGroup" style="display: none;">
+                <input type="checkbox" id="rememberTabletCheck" class="form-checkbox">
+                <label for="rememberTabletCheck">이 태블릿에 내 정보 기억하기 (다음부터 바로 시작)</label>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-block btn-lg" id="btnStudentStart" disabled>
+                🎵 리코더 일지 시작하기
+              </button>
+            </form>
+          </div>
+
+          <!-- 선생님 입장 카드 -->
+          <div class="mode-card teacher-card">
+            <div class="card-icon">👩‍🏫</div>
+            <h3>선생님 모드</h3>
+            <p>학급 전체 연습 현황 확인 및 곡·명단 관리</p>
+
+            <form id="teacherLoginForm" class="login-form">
+              <div class="form-group">
+                <label for="teacherPinInput">선생님 비밀번호</label>
+                <input type="password" id="teacherPinInput" class="form-input" placeholder="비밀번호를 입력하세요 (기본: 1234)" required>
+              </div>
+              <button type="submit" class="btn btn-secondary btn-block">
+                선생님 대시보드 입장
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 2. 학생 홈 화면 ================= -->
+      <section id="view-student-home" class="view">
+        <div class="student-welcome-banner">
+          <div class="welcome-info">
+            <span class="welcome-chip" id="homeClassNumberChip">3학년 1반 1번</span>
+            <h2 class="welcome-name"><span id="homeStudentName">홍길동</span> 학생, 반가워요! 🎵</h2>
+            <p class="welcome-quote">꾸준히 연습한 리코더 소리는 마법처럼 예뻐져요.</p>
+          </div>
+          <div class="welcome-badge-icon">🌟</div>
+        </div>
+
+        <!-- 3개 핵심 요약 카드 -->
+        <div class="stats-summary-grid">
+          <div class="stat-card">
+            <div class="stat-icon bg-mint">📅</div>
+            <div class="stat-content">
+              <span class="stat-label">이번 주 연습</span>
+              <strong class="stat-value"><span id="statWeeklyDays">0</span><small>일</small></strong>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon bg-yellow">🎺</div>
+            <div class="stat-content">
+              <span class="stat-label">연습한 곡</span>
+              <strong class="stat-value"><span id="statTotalSongs">0</span><small>곡</small></strong>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon bg-pink">✨</div>
+            <div class="stat-content">
+              <span class="stat-label">총 연습 횟수</span>
+              <strong class="stat-value"><span id="statTotalCount">0</span><small>회</small></strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- 현재 도전 곡 카드 -->
+        <div class="current-challenge-card" id="currentChallengeCard">
+          <div class="challenge-header">
+            <span class="challenge-tag">지금 도전 중인 곡</span>
+            <span class="challenge-stage-badge" id="challengeStageBadge">1단계: 악보와 운지</span>
+          </div>
+          <h3 class="challenge-title" id="challengeSongTitle">비행기</h3>
+          <p class="challenge-tip" id="challengeTip">호흡을 고르게 하고 시-라-솔 손가락 구멍을 꼼꼼히 막아보세요!</p>
+        </div>
+
+        <!-- 핵심 액션 버튼 -->
+        <div class="action-buttons-group">
+          <button type="button" class="btn btn-primary btn-hero" id="btnGoPractice">
+            <span class="btn-hero-icon">🎵</span>
+            <div class="btn-hero-text">
+              <strong>오늘의 연습 기록하기</strong>
+              <small>불렀던 횟수와 느낀 점을 1분 만에 쏙!</small>
+            </div>
+          </button>
+          <button type="button" class="btn btn-soft btn-lg" id="btnGoGrowth">
+            📈 나의 성장 기록 보기
+          </button>
+        </div>
+
+        <!-- 최근 연습 기록 3개 프리뷰 -->
+        <div class="recent-records-section">
+          <div class="section-header">
+            <h4>최근 나의 연습 기록</h4>
+            <span class="section-sub">최근 3회</span>
+          </div>
+          <div class="recent-records-list" id="homeRecentRecordsList">
+            <!-- JS 동적 렌더링 -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 3. 오늘의 연습 기록 화면 ================= -->
+      <section id="view-practice-form" class="view">
+        <div class="form-header-bar">
+          <button type="button" class="btn btn-sm btn-ghost" id="btnPracticeBack">
+            ← 뒤로가기
+          </button>
+          <h2>오늘의 연습 기록하기</h2>
+          <span class="step-indicator">순서대로 콕콕 선택해요</span>
+        </div>
+
+        <form id="practiceRecordForm" class="practice-record-form" novalidate>
+          <!-- ① 오늘 연습한 곡 -->
+          <div class="form-card">
+            <div class="form-card-title">
+              <span class="step-num">1</span>
+              <div>
+                <h3>어떤 곡을 연습했나요?</h3>
+                <p>선생님이 등록해 주신 곡 목록에서 골라보세요.</p>
+              </div>
+            </div>
+            <div class="form-group">
+              <select id="practiceSongSelect" class="form-select select-lg" required>
+                <option value="">연습한 곡을 선택하세요</option>
+              </select>
+            </div>
+            <div class="selected-song-stage-box" id="selectedSongStageBox" style="display: none;">
+              <span class="stage-guide-label">현재 연습 단계:</span>
+              <span class="badge badge-primary" id="selectedSongStageText">1단계 악보와 운지</span>
+            </div>
+          </div>
+
+          <!-- ② 오늘 집중해서 연습한 부분 -->
+          <div class="form-card">
+            <div class="form-card-title">
+              <span class="step-num">2</span>
+              <div>
+                <h3>어떤 부분을 가장 집중해서 연습했나요?</h3>
+                <p>오늘 내가 신경 쓴 포인트 1가지를 선택해요.</p>
+              </div>
+            </div>
+            <div class="choice-grid" id="focusAreaGrid">
+              <label class="choice-pill">
+                <input type="radio" name="focusArea" value="운지법" required>
+                <span class="choice-pill-content">
+                  <span class="pill-icon">👆</span>
+                  <span class="pill-text">운지법</span>
+                  <span class="pill-desc">구멍 꼭꼭 막기</span>
+                </span>
+              </label>
+              <label class="choice-pill">
+                <input type="radio" name="focusArea" value="호흡">
+                <span class="choice-pill-content">
+                  <span class="pill-icon">💨</span>
+                  <span class="pill-text">호흡</span>
+                  <span class="pill-desc">맑고 부드럽게</span>
+                </span>
+              </label>
+              <label class="choice-pill">
+                <input type="radio" name="focusArea" value="박자">
+                <span class="choice-pill-content">
+                  <span class="pill-icon">⏱️</span>
+                  <span class="pill-text">박자</span>
+                  <span class="pill-desc">일정한 빠르기</span>
+                </span>
+              </label>
+              <label class="choice-pill">
+                <input type="radio" name="focusArea" value="음 연결">
+                <span class="choice-pill-content">
+                  <span class="pill-icon">🎶</span>
+                  <span class="pill-text">음 연결</span>
+                  <span class="pill-desc">끊김 없이 매끄럽게</span>
+                </span>
+              </label>
+              <label class="choice-pill">
+                <input type="radio" name="focusArea" value="곡 전체 연주">
+                <span class="choice-pill-content">
+                  <span class="pill-icon">🎼</span>
+                  <span class="pill-text">곡 전체 연주</span>
+                  <span class="pill-desc">처음부터 끝까지</span>
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <!-- ③ 연습 횟수 -->
+          <div class="form-card">
+            <div class="form-card-title">
+              <span class="step-num">3</span>
+              <div>
+                <h3>몇 번 불렀나요?</h3>
+                <p>한 번 불 때마다 '연습 1회 완료' 버튼을 눌러보세요.</p>
+              </div>
+            </div>
+            
+            <div class="counter-container">
+              <div class="counter-display">
+                <span class="counter-value" id="practiceCountDisplay">1</span>
+                <span class="counter-unit">회</span>
+              </div>
+
+              <!-- 초등학생을 위한 대형 액션 버튼 -->
+              <div class="counter-actions">
+                <button type="button" class="btn btn-tap-counter" id="btnCountAddMain">
+                  <span class="tap-icon">🎵</span>
+                  <span class="tap-text">연습 1회 완료! (+1)</span>
+                </button>
+                <div class="counter-sub-actions">
+                  <button type="button" class="btn btn-outline btn-sm" id="btnCountCancelLast">
+                    ↩️ 잘못 눌렀어요 (-1)
+                  </button>
+                  <div class="stepper-mini">
+                    <button type="button" class="btn-step" id="btnCountMinus" title="1회 줄이기">-</button>
+                    <button type="button" class="btn-step" id="btnCountPlus" title="1회 늘리기">+</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ④ 오늘의 자기평가 -->
+          <div class="form-card">
+            <div class="form-card-title">
+              <span class="step-num">4</span>
+              <div>
+                <h3>스스로 연주를 돌아보아요</h3>
+                <p>솔직하게 오늘 내 소리가 어땠는지 평가해주세요.</p>
+              </div>
+            </div>
+
+            <div class="self-eval-grid" id="selfEvalGrid">
+              <label class="eval-card">
+                <input type="radio" name="selfEval" value="잘했어요" required>
+                <div class="eval-card-content eval-good">
+                  <span class="eval-emoji">😄</span>
+                  <strong class="eval-title">잘했어요!</strong>
+                  <span class="eval-desc">목표한 부분을 맑은 소리로 잘 연주했어요.</span>
+                </div>
+              </label>
+              <label class="eval-card">
+                <input type="radio" name="selfEval" value="조금씩 나아지고 있어요">
+                <div class="eval-card-content eval-so-so">
+                  <span class="eval-emoji">🙂</span>
+                  <strong class="eval-title">조금씩 나아져요</strong>
+                  <span class="eval-desc">어려웠던 곳이 점점 편해지고 있어요.</span>
+                </div>
+              </label>
+              <label class="eval-card">
+                <input type="radio" name="selfEval" value="연습이 더 필요해요">
+                <div class="eval-card-content eval-need-more">
+                  <span class="eval-emoji">😐</span>
+                  <strong class="eval-title">더 연습할래요</strong>
+                  <span class="eval-desc">손가락이나 호흡 조절이 더 필요해요.</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- ⑤ 오늘의 연습 한마디 (선택) -->
+          <div class="form-card">
+            <div class="form-card-title">
+              <span class="step-num">5</span>
+              <div>
+                <h3>연습 한마디 <small class="text-muted">(선택)</small></h3>
+                <p>잘된 점이나 다음번에 조심할 점을 짧게 적어보세요.</p>
+              </div>
+            </div>
+            <div class="form-group">
+              <textarea id="practiceCommentInput" class="form-textarea" rows="2" maxlength="150" placeholder="예: '파' 소리가 삑사리 나지 않아서 기뻤어요!"></textarea>
+              <div class="textarea-counter"><span id="commentCharCount">0</span>/150자</div>
+            </div>
+          </div>
+
+          <!-- 저장 버튼 -->
+          <div class="form-submit-area">
+            <button type="submit" class="btn btn-primary btn-block btn-hero" id="btnSavePractice">
+              💾 연습 기록 저장하기
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- ================= 4. 연습 완료 화면 ================= -->
+      <section id="view-complete" class="view">
+        <div class="complete-card">
+          <div class="complete-confetti">🎉</div>
+          <h2 class="complete-title">오늘도 한 걸음 성장했어요!</h2>
+          <p class="complete-sub">선생님과 나만의 성장 일지에 연습 기록이 쏙 저장되었어요.</p>
+
+          <div class="complete-summary-box">
+            <div class="summary-item">
+              <span class="s-label">연습한 곡</span>
+              <strong class="s-val" id="compSongTitle">비행기</strong>
+            </div>
+            <div class="summary-item">
+              <span class="s-label">연습 횟수</span>
+              <strong class="s-val" id="compCount">5회</strong>
+            </div>
+            <div class="summary-item">
+              <span class="s-label">집중한 부분</span>
+              <strong class="s-val" id="compFocus">운지법</strong>
+            </div>
+            <div class="summary-item">
+              <span class="s-label">자기평가</span>
+              <strong class="s-val" id="compEval">😄 잘했어요!</strong>
+            </div>
+          </div>
+
+          <div class="complete-actions">
+            <button type="button" class="btn btn-primary btn-lg btn-block" id="btnCompGoGrowth">
+              📈 나의 성장 기록 보러가기
+            </button>
+            <button type="button" class="btn btn-outline btn-block" id="btnCompGoHome">
+              🏠 홈으로 돌아가기
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 5. 나의 성장 기록 화면 ================= -->
+      <section id="view-student-growth" class="view">
+        <div class="form-header-bar">
+          <button type="button" class="btn btn-sm btn-ghost" id="btnGrowthBack">
+            ← 홈으로
+          </button>
+          <h2>나의 성장 기록</h2>
+          <span class="step-indicator">어제의 나보다 한 뼘 더 자란 음악 실력</span>
+        </div>
+
+        <!-- 누적 성장 통계 -->
+        <div class="growth-stats-grid">
+          <div class="g-stat-card">
+            <span class="g-stat-label">누적 연습 일수</span>
+            <strong class="g-stat-num" id="gStatDays">0</strong>
+            <small>일 동안 쉼 없이</small>
+          </div>
+          <div class="g-stat-card">
+            <span class="g-stat-label">누적 연습 횟수</span>
+            <strong class="g-stat-num" id="gStatCounts">0</strong>
+            <small>번의 아름다운 소리</small>
+          </div>
+          <div class="g-stat-card">
+            <span class="g-stat-label">도전한 곡 수</span>
+            <strong class="g-stat-num" id="gStatSongs">0</strong>
+            <small>곡의 멋진 멜로디</small>
+          </div>
+        </div>
+
+        <!-- 선생님의 따뜻한 피드백 영역 -->
+        <div class="teacher-feedback-banner" id="teacherFeedbackBanner" style="display: none;">
+          <div class="feedback-badge">👩‍🏫 선생님의 응원 한마디</div>
+          <p class="feedback-text" id="teacherFeedbackText">-</p>
+          <div class="feedback-footer">
+            <span class="feedback-date" id="teacherFeedbackDate">-</span>
+            <button type="button" class="btn btn-xs btn-primary" id="btnConfirmFeedback">
+              선생님 말씀 확인했어요 👍
+            </button>
+          </div>
+        </div>
+
+        <!-- 주간 연습 기록 그래프 -->
+        <div class="growth-card">
+          <div class="growth-card-header">
+            <h4>📅 최근 7일 연습 횟수 그래프</h4>
+            <span class="text-muted">꾸준함이 실력을 만들어요</span>
+          </div>
+          <div class="chart-container" id="weeklyChartContainer">
+            <!-- JS 동적 생성 막대그래프 -->
+          </div>
+        </div>
+
+        <!-- 곡별 연습 단계 및 진행률 -->
+        <div class="growth-card">
+          <div class="growth-card-header">
+            <h4>🎼 곡별 연습 단계</h4>
+            <span class="text-muted">4단계 완성을 향해 달려가요</span>
+          </div>
+          <div class="song-stages-list" id="growthSongStagesList">
+            <!-- JS 동적 생성 -->
+          </div>
+        </div>
+
+        <!-- 이전 연습 기록 타임라인 -->
+        <div class="growth-card">
+          <div class="growth-card-header">
+            <h4>📜 날짜별 연습 일지</h4>
+            <div class="filter-controls">
+              <select id="growthSongFilter" class="form-select form-select-sm">
+                <option value="ALL">모든 곡 보기</option>
+              </select>
+            </div>
+          </div>
+          <div class="records-timeline" id="growthRecordsTimeline">
+            <!-- JS 렌더링 -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 6. 교사 대시보드 화면 ================= -->
+      <section id="view-teacher-dashboard" class="view">
+        <div class="teacher-header-bar">
+          <div>
+            <h2>👩‍🏫 교사 대시보드</h2>
+            <p>우리 반 학생들의 리코더 연습 현황과 성장을 한눈에 파악해요.</p>
+          </div>
+          <div class="teacher-header-btns">
+            <button type="button" class="btn btn-outline btn-sm" id="btnGoTeacherManage">
+              ⚙️ 곡·학생·시트 관리
+            </button>
+            <button type="button" class="btn btn-ghost btn-sm" id="btnTeacherExit">
+              학생 모드로 가기
+            </button>
+          </div>
+        </div>
+
+        <!-- 교사 통계 요약 4종 -->
+        <div class="teacher-overview-grid">
+          <div class="t-card">
+            <span class="t-label">전체 등록 학생</span>
+            <strong class="t-value" id="tStatTotalStudents">0명</strong>
+          </div>
+          <div class="t-card">
+            <span class="t-label">이번 주 참여 학생</span>
+            <strong class="t-value" id="tStatActiveStudents">0명</strong>
+            <small class="t-badge" id="tStatParticipationRate">참여율 0%</small>
+          </div>
+          <div class="t-card">
+            <span class="t-label">가장 많이 연습한 곡</span>
+            <strong class="t-value text-primary" id="tStatTopSong">-</strong>
+          </div>
+          <div class="t-card">
+            <span class="t-label">어려워하는 연습 요소</span>
+            <strong class="t-value text-accent" id="tStatDifficultFocus">-</strong>
+          </div>
+        </div>
+
+        <!-- 학생별 연습 현황 테이블 -->
+        <div class="teacher-card-container">
+          <div class="teacher-card-header">
+            <h4>📋 학생별 리코더 연습 현황</h4>
+            <div class="table-search-bar">
+              <input type="text" id="teacherStudentSearch" class="form-input form-input-sm" placeholder="학생 이름 검색...">
+            </div>
+          </div>
+          
+          <div class="table-responsive">
+            <table class="teacher-table">
+              <thead>
+                <tr>
+                  <th>학급</th>
+                  <th>번호</th>
+                  <th>이름</th>
+                  <th>연습 일수</th>
+                  <th>총 연습 횟수</th>
+                  <th>최근 연습곡</th>
+                  <th>최근 평가</th>
+                  <th>선생님 피드백</th>
+                  <th>기록 관리</th>
+                </tr>
+              </thead>
+              <tbody id="teacherStudentTableBody">
+                <!-- JS 동적 렌더링 -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 7. 교사 관리 화면 ================= -->
+      <section id="view-teacher-manage" class="view">
+        <div class="teacher-header-bar">
+          <div>
+            <h2>⚙️ 교사 관리 센터</h2>
+            <p>학생 명단, 연습곡, 잘못된 기록 정정 및 구글 시트 연동을 설정합니다.</p>
+          </div>
+          <button type="button" class="btn btn-sm btn-outline" id="btnBackToDashboard">
+            ← 대시보드로 돌아가기
+          </button>
+        </div>
+
+        <!-- 탭 네비게이션 -->
+        <div class="manage-tabs">
+          <button type="button" class="tab-btn active" data-tab="tab-sheet">구글 시트 연동 설정</button>
+          <button type="button" class="tab-btn" data-tab="tab-songs">연습곡 관리</button>
+          <button type="button" class="tab-btn" data-tab="tab-students">학생 명단 관리</button>
+          <button type="button" class="tab-btn" data-tab="tab-records">기록 정정 및 삭제</button>
+        </div>
+
+        <!-- 탭 1: 구글 시트 연동 -->
+        <div id="tab-sheet" class="tab-pane active">
+          <div class="manage-box">
+            <h3>📊 구글 스프레드시트 연동</h3>
+            <p>학생들의 연습 기록과 교사 피드백이 선생님의 구글 드라이브 스프레드시트에 영구 보관됩니다.</p>
+            
+            <div class="sheet-status-box" id="sheetStatusBox">
+              <span class="status-indicator status-local" id="sheetStatusIndicator"></span>
+              <strong id="sheetStatusText">현재 로컬 브라우저 저장소 모드로 작동 중입니다.</strong>
+            </div>
+
+            <form id="sheetConfigForm" class="mt-4">
+              <div class="form-group">
+                <label for="appsScriptUrlInput">
+                  Google Apps Script Web App URL
+                  <span class="label-hint">`setup.md` 가이드에 따라 배포한 웹 앱 URL을 붙여넣으세요.</span>
+                </label>
+                <input type="url" id="appsScriptUrlInput" class="form-input" placeholder="https://script.google.com/macros/s/.../exec">
+              </div>
+
+              <div class="btn-group">
+                <button type="submit" class="btn btn-primary" id="btnSaveSheetUrl">
+                  설정 저장 및 연결 테스트
+                </button>
+                <button type="button" class="btn btn-outline" id="btnManualSync">
+                  🔄 로컬 데이터 즉시 시트로 동기화
+                </button>
+              </div>
+            </form>
+
+            <div class="guide-box mt-4">
+              <h4>💡 처음 연동하시나요?</h4>
+              <p>프로젝트 폴더 내 <code>setup.md</code> 파일을 열람하시면 3분 안에 구글 시트를 만들고 Apps Script를 무료 배포하는 단계별 가이드가 정리되어 있습니다.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 탭 2: 연습곡 관리 -->
+        <div id="tab-songs" class="tab-pane">
+          <div class="manage-box">
+            <div class="box-header">
+              <h3>🎼 연습곡 목록 관리</h3>
+              <button type="button" class="btn btn-sm btn-primary" id="btnOpenAddSongModal">
+                + 새 연습곡 등록
+              </button>
+            </div>
+            <div class="table-responsive mt-3">
+              <table class="teacher-table">
+                <thead>
+                  <tr>
+                    <th>곡 ID</th>
+                    <th>곡명</th>
+                    <th>기본 연습 단계</th>
+                    <th>정렬 순서</th>
+                    <th>관리</th>
+                  </tr>
+                </thead>
+                <tbody id="manageSongTableBody">
+                  <!-- JS 동적 렌더링 -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- 탭 3: 학생 명단 관리 -->
+        <div id="tab-students" class="tab-pane">
+          <div class="manage-box">
+            <div class="box-header">
+              <h3>👥 학생 명단 관리</h3>
+              <button type="button" class="btn btn-sm btn-primary" id="btnOpenAddStudentModal">
+                + 새 학생 등록
+              </button>
+            </div>
+            <div class="table-responsive mt-3">
+              <table class="teacher-table">
+                <thead>
+                  <tr>
+                    <th>학생 ID</th>
+                    <th>학급</th>
+                    <th>번호</th>
+                    <th>이름</th>
+                    <th>확인 PIN</th>
+                    <th>등록일</th>
+                    <th>관리</th>
+                  </tr>
+                </thead>
+                <tbody id="manageStudentTableBody">
+                  <!-- JS 동적 렌더링 -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- 탭 4: 기록 정정 및 삭제 -->
+        <div id="tab-records" class="tab-pane">
+          <div class="manage-box">
+            <div class="box-header">
+              <h3>📝 전체 연습 기록 정정/삭제</h3>
+              <span class="text-muted">학생이 실수로 잘못 등록한 기록을 삭제하거나 수정할 수 있습니다.</span>
+            </div>
+            <div class="table-responsive mt-3">
+              <table class="teacher-table">
+                <thead>
+                  <tr>
+                    <th>일시</th>
+                    <th>학생</th>
+                    <th>곡명</th>
+                    <th>집중 영역</th>
+                    <th>횟수</th>
+                    <th>자기평가</th>
+                    <th>소감</th>
+                    <th>삭제</th>
+                  </tr>
+                </thead>
+                <tbody id="manageRecordsTableBody">
+                  <!-- JS 동적 렌더링 -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- 모달: 교사 피드백 및 학생 상세 일지 보기 -->
+    <div class="modal-overlay" id="studentDetailModal" style="display: none;">
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <h3 id="modalStudentTitle">홍길동 학생의 리코더 일지</h3>
+          <button type="button" class="btn-close" id="btnCloseModal">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="modal-summary-grid">
+            <div class="m-stat">
+              <span>연습 일수</span>
+              <strong id="modalStudentDays">0일</strong>
+            </div>
+            <div class="m-stat">
+              <span>총 연습 횟수</span>
+              <strong id="modalStudentCounts">0회</strong>
+            </div>
+            <div class="m-stat">
+              <span>연습한 곡</span>
+              <strong id="modalStudentSongs">0곡</strong>
+            </div>
+          </div>
+
+          <!-- 선생님 피드백 입력 폼 -->
+          <div class="feedback-input-box">
+            <h4>💬 학생에게 전달할 격려 피드백</h4>
+            <textarea id="modalFeedbackInput" class="form-textarea" rows="2" placeholder="예: '호흡이 정말 안정적이에요. 다음번엔 3단계 전체 연주에 도전해봐요!'"></textarea>
+            <div class="text-right mt-2">
+              <button type="button" class="btn btn-sm btn-primary" id="btnSaveFeedback">
+                피드백 저장하기
+              </button>
+            </div>
+          </div>
+
+          <!-- 학생의 연습 이력 목록 -->
+          <div class="modal-records-history">
+            <h4>최근 연습 기록</h4>
+            <div id="modalRecordsList" class="modal-records-list">
+              <!-- JS 동적 렌더링 -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 모달: 연습곡 추가/수정 -->
+    <div class="modal-overlay" id="addSongModal" style="display: none;">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-header">
+          <h3>연습곡 추가</h3>
+          <button type="button" class="btn-close" id="btnCloseSongModal">✕</button>
+        </div>
+        <form id="addSongForm" class="modal-body">
+          <div class="form-group">
+            <label for="newSongTitle">곡명</label>
+            <input type="text" id="newSongTitle" class="form-input" placeholder="예: 작은 별" required>
+          </div>
+          <div class="form-group">
+            <label for="newSongStage">시작 연습 단계</label>
+            <select id="newSongStage" class="form-select">
+              <option value="악보와 운지 익히기">1. 악보와 운지 익히기</option>
+              <option value="부분 연습">2. 부분 연습</option>
+              <option value="전체 연주">3. 전체 연주</option>
+              <option value="표현하며 연주하기">4. 표현하며 연주하기</option>
+            </select>
+          </div>
+          <div class="text-right mt-4">
+            <button type="submit" class="btn btn-primary">등록하기</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 모달: 학생 추가 -->
+    <div class="modal-overlay" id="addStudentModal" style="display: none;">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-header">
+          <h3>학생 명단 추가</h3>
+          <button type="button" class="btn-close" id="btnCloseStudentModal">✕</button>
+        </div>
+        <form id="addStudentForm" class="modal-body">
+          <div class="form-group">
+            <label for="newStudentClass">학급</label>
+            <input type="text" id="newStudentClass" class="form-input" placeholder="예: 3학년 1반" required>
+          </div>
+          <div class="form-group">
+            <label for="newStudentNum">번호</label>
+            <input type="number" id="newStudentNum" class="form-input" min="1" max="50" placeholder="1" required>
+          </div>
+          <div class="form-group">
+            <label for="newStudentName">이름</label>
+            <input type="text" id="newStudentName" class="form-input" placeholder="예: 김민우" required>
+          </div>
+          <div class="form-group">
+            <label for="newStudentPin">확인 PIN (4자리)</label>
+            <input type="text" id="newStudentPin" class="form-input" maxlength="4" placeholder="0000" value="0000">
+          </div>
+          <div class="text-right mt-4">
+            <button type="submit" class="btn btn-primary">학생 등록</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 글로벌 토스트 알림 컨테이너 -->
+    <div id="toastContainer" class="toast-container"></div>
+  </div>
+
+  <script src="./script.js"></script>
+</body>
+</html>

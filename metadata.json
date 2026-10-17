@@ -1,0 +1,6 @@
+{
+  "name": "리코더 성장 일지",
+  "description": "초등학생 리코더 연습 기록 및 성장 과정을 시각화하고 교사와 공유하는 웹앱",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
