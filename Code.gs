@@ -29,7 +29,7 @@ function doGet(e) {
         var students = ss.getSheetByName('학생명단');
         if (students && students.getLastRow() > 1) {
           var studentRows = students.getRange(2, 1, students.getLastRow()-1, 5).getDisplayValues();
-          allowed = studentRows.some(function(row) { return row[0] === studentId && row[4] === pin && pin !== '0000'; });
+          allowed = studentRows.some(function(row) { return String(row[0]).trim() === studentId && String(row[4]).trim() === pin && pin !== '0000'; });
         }
       }
       if (!allowed) throw new Error('조회 권한이 없습니다. 학생 확인코드 또는 교사 조회 비밀번호를 확인하세요.');
@@ -37,9 +37,25 @@ function doGet(e) {
       var records = [];
       if (sheet && sheet.getLastRow() > 1) {
         var rows = sheet.getRange(2, 1, sheet.getLastRow()-1, 10).getDisplayValues();
-        rows.forEach(function(r) {
-          if (!teacher && r[2] !== studentId) return;
-          records.push({id:r[0],createdAt:r[1],dateOnly:r[1].slice(0,10),studentId:r[2],songTitle:r[3],focusArea:r[4],count:Number(r[5])||0,selfEval:r[6],comment:r[7],teacherFeedback:r[8],feedbackConfirmed:r[9]==='확인완료'});
+        var studentSheet = ss.getSheetByName('학생명단');
+        var names = {};
+        if (studentSheet && studentSheet.getLastRow() > 1) {
+          studentSheet.getRange(2, 1, studentSheet.getLastRow()-1, 5).getDisplayValues().forEach(function(s) {
+            if (s[3] && !names[s[3]]) names[s[3]] = s[0];
+            else if (s[3]) names[s[3]] = null; // 같은 이름이 여러 명이면 연결하지 않음
+          });
+        }
+        rows.forEach(function(r, index) {
+          var modern = /^rec-/.test(r[0]);
+          var sid = modern ? r[2] : names[r[1]];
+          if (!sid || (!teacher && sid !== studentId)) return;
+          var createdAt = modern ? r[1] : r[0];
+          var title = modern ? r[3] : r[2];
+          var focus = modern ? r[4] : r[3];
+          var count = modern ? r[5] : r[4];
+          var evaluation = modern ? r[6] : r[5];
+          var comment = modern ? r[7] : r[6];
+          records.push({id:modern?r[0]:'legacy-row-'+(index+2),createdAt:createdAt,dateOnly:String(createdAt).slice(0,10),studentId:sid,songTitle:title,focusArea:focus,count:Number(String(count).replace(/[^0-9]/g,''))||0,selfEval:evaluation,comment:comment,teacherFeedback:modern?r[8]:'',feedbackConfirmed:modern?r[9]==='확인완료':false});
         });
       }
       result = {status:'success',records:records};
