@@ -5,6 +5,7 @@
 function doGet(e) {
   var action = (e && e.parameter && e.parameter.action) ? e.parameter.action : 'ping';
   
+  if (action === 'bridge') return HtmlService.createHtmlOutput(recorderBridgeHtml_()).setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
   if (action === 'ping') {
     return ContentService.createTextOutput(JSON.stringify({ status: 'ok', message: 'Recorder Journal API Connected!' }))
       .setMimeType(ContentService.MimeType.JSON);
@@ -229,4 +230,45 @@ function doPost(e) {
     return ContentService.createTextOutput(JSON.stringify({ status: 'error', message: error.toString() }))
       .setMimeType(ContentService.MimeType.JSON);
   }
+}
+function recorderBridgeHtml_(){
+  var html = '<!doctype html><html><body><script>' +
+    '(function(){var origin="https://dmsgks652-cmd.github.io";' +
+    'window.addEventListener("message",function(e){if(e.origin!==origin||!e.data||e.data.kind!=="recorder-request")return;' +
+    'var d=e.data;var ok=function(r){e.source.postMessage({kind:"recorder-result",id:d.id,ok:true,result:r},e.origin)};' +
+    'var fail=function(x){e.source.postMessage({kind:"recorder-result",id:d.id,ok:false,error:String(x.message||x)},e.origin)};' +
+    'if(d.action==="directory")google.script.run.withSuccessHandler(ok).withFailureHandler(fail).recorderDirectory();' +
+    'else if(d.action==="login")google.script.run.withSuccessHandler(ok).withFailureHandler(fail).recorderStudentLogin(d.payload.studentId,d.payload.pin);' +
+    'else fail({message:"Unsupported action"});});' +
+    'window.parent.postMessage({kind:"recorder-ready"},origin);})();' +
+    '</scr'+'ipt></body></html>';
+  return html;
+}
+function recorderDirectory(){
+  var ss=SpreadsheetApp.getActiveSpreadsheet();
+  var a=ss.getSheetByName('학생명단'),b=ss.getSheetByName('연습곡목록');
+  if(!a||!b)throw Error('학생명단 또는 연습곡목록 시트가 없습니다.');
+  var students=a.getLastRow()<2?[]:a.getRange(2,1,a.getLastRow()-1,5).getDisplayValues().filter(function(r){return r[0]&&r[3];}).map(function(r){return {id:r[0],className:r[1],number:Number(String(r[2]).replace(/[^0-9]/g,'')),name:r[3]};});
+  var songs=b.getLastRow()<2?[]:b.getRange(2,1,b.getLastRow()-1,7).getDisplayValues().filter(function(r){return r[0]&&r[1]&&!/^(미사용|아니오|false|n|0)$/i.test(String(r[6]).trim());}).map(function(r,i){return {id:r[0],title:r[1],stage:r[2]||'연습하기',stages:[r[2],r[3],r[4],r[5]],order:i+1};});
+  return {students:students,songs:songs};
+}
+function recorderStudentLogin(studentId,pin){
+  if(!studentId||!pin||String(pin)==='0000')throw Error('올바른 개인 확인번호를 입력해주세요.');
+  var ss=SpreadsheetApp.getActiveSpreadsheet(),sheet=ss.getSheetByName('학생명단');
+  if(!sheet||sheet.getLastRow()<2)throw Error('학생명단이 없습니다.');
+  var rows=sheet.getRange(2,1,sheet.getLastRow()-1,5).getDisplayValues();
+  var match=rows.find(function(r){return String(r[0]).trim()===String(studentId).trim()&&String(r[4]).trim()===String(pin).trim();});
+  if(!match)throw Error('학생 정보 또는 확인 PIN이 일치하지 않습니다.');
+  var records=[],rs=ss.getSheetByName('연습기록');
+  if(rs&&rs.getLastRow()>1){
+    var all=rs.getRange(2,1,rs.getLastRow()-1,10).getDisplayValues();
+    var sameNameCount=rows.filter(function(r){return r[3]===match[3];}).length;
+    all.forEach(function(r,i){
+      var modern=/^rec-/.test(r[0]);
+      if(modern?String(r[2])!==String(studentId):!(sameNameCount===1&&r[1]===match[3]))return;
+      var date=modern?r[1]:r[0];
+      records.push({id:modern?r[0]:'legacy-row-'+(i+2),createdAt:date,dateOnly:String(date).slice(0,10),studentId:studentId,songTitle:modern?r[3]:r[2],focusArea:modern?r[4]:r[3],count:Number(String(modern?r[5]:r[4]).replace(/[^0-9]/g,''))||0,selfEval:modern?r[6]:r[5],comment:modern?r[7]:r[6],teacherFeedback:modern?r[8]:'',feedbackConfirmed:modern?r[9]==='확인완료':false});
+    });
+  }
+  return {student:{id:match[0],className:match[1],number:Number(String(match[2]).replace(/[^0-9]/g,'')),name:match[3]},records:records};
 }
