@@ -365,7 +365,7 @@ class RecorderApp {
 
     // 개인 태블릿에 저장된 학생 ID 확인 (자동 입장)
     const rememberedId = localStorage.getItem('recorder_remembered_student_id');
-    if (rememberedId) {
+    if (rememberedId && !this.appsScriptUrl) {
       const student = this.students.find(s => s.id === rememberedId);
       if (student) {
         this.loginAsStudent(student, false);
@@ -509,10 +509,10 @@ class RecorderApp {
 
     // 4자리 확인 핀번호 검증
     const enteredPin = this.studentPinInput.value.trim();
-    const expectedPin = student.pin || '0000';
+    const expectedPin = String(student.pin || '');
 
-    if (enteredPin && enteredPin !== expectedPin) {
-      this.showToast('확인 번호가 일치하지 않습니다. (기본값: 0000)', 'error');
+    if (!enteredPin || enteredPin === '0000' || expectedPin === '0000' || enteredPin !== expectedPin) {
+      this.showToast('학생 확인번호가 올바르지 않습니다. 선생님께 개인 확인번호를 문의하세요.', 'error');
       this.studentPinInput.focus();
       return;
     }
