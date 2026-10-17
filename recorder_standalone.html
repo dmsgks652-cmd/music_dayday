@@ -1,0 +1,4120 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>리코더 성장 일지 - 🎵 나의 리코더 연습 기록</title>
+  <meta name="description" content="초등학생 리코더 연습 기록 및 성장 과정을 시각화하고 교사와 공유하는 웹앱">
+  <meta property="og:title" content="리코더 성장 일지">
+  <meta property="og:description" content="초등학생 리코더 연습 기록 및 성장 과정을 시각화하고 교사와 공유하는 웹앱">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <style>
+/* ==========================================================================
+   🎵 리코더 성장 일지 (Recorder Growth Journal) - style.css
+   초등학생 눈높이에 맞춘 따뜻하고 귀여운 파스텔톤 디자인 시스템
+   ========================================================================== */
+
+/* 1. 디자인 토큰 및 변수 */
+:root {
+  /* 파스텔 색상 팔레트 */
+  --color-bg: #FAF9F6;
+  --color-surface: #FFFFFF;
+  --color-surface-soft: #F4F7F6;
+  --color-border: #E8ECE9;
+  
+  --color-primary: #38A169;
+  --color-primary-light: #E6F4EA;
+  --color-primary-dark: #276749;
+
+  --color-accent-mint: #4FD1C5;
+  --color-accent-mint-bg: #E6FFFA;
+
+  --color-accent-yellow: #ECC94B;
+  --color-accent-yellow-bg: #FEFCBF;
+
+  --color-accent-coral: #F56565;
+  --color-accent-coral-bg: #FED7D7;
+
+  --color-accent-blue: #4299E1;
+  --color-accent-blue-bg: #EBF8FF;
+
+  --color-accent-purple: #9F7AEA;
+  --color-accent-purple-bg: #FAF5FF;
+
+  /* 텍스트 색상 */
+  --color-text-main: #2D3748;
+  --color-text-muted: #718096;
+  --color-text-light: #A0AEC0;
+
+  /* 폰트 및 라운딩 */
+  --font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-full: 9999px;
+
+  /* 그림자 */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 12px rgba(45, 55, 72, 0.06);
+  --shadow-lg: 0 8px 24px rgba(45, 55, 72, 0.08);
+  --shadow-hover: 0 10px 28px rgba(56, 161, 105, 0.16);
+
+  /* 트랜지션 */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 기본 리셋 */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--color-bg);
+  color: var(--color-text-main);
+  line-height: 1.5;
+  font-size: 16px;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  background-image: radial-gradient(#E2E8F0 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* 전체 앱 컨테이너 */
+.app-container {
+  width: 100%;
+  max-width: 900px;
+  min-height: 100vh;
+  background-color: var(--color-surface);
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* 상단 헤더 */
+.app-header {
+  height: 68px;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid var(--color-border);
+  background-color: rgba(255, 255, 255, 0.95);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  backdrop-filter: blur(8px);
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.logo-icon {
+  font-size: 28px;
+  background-color: var(--color-accent-mint-bg);
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-sm);
+}
+
+.logo-text h1 {
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--color-text-main);
+  line-height: 1.2;
+}
+
+.logo-sub {
+  font-size: 12px;
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.header-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-badge {
+  display: flex;
+  align-items: center;
+  background-color: var(--color-primary-light);
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  gap: 6px;
+  font-size: 14px;
+}
+
+.badge-role {
+  background-color: var(--color-primary);
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
+}
+
+.badge-name {
+  font-weight: 700;
+  color: var(--color-primary-dark);
+}
+
+/* 메인 컨텐츠 및 뷰 라우팅 */
+.main-content {
+  flex: 1;
+  padding: 24px;
+}
+
+.view {
+  display: none;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.view.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   뷰 1: 시작 화면 (Start View)
+   ========================================================================== */
+.welcome-hero {
+  text-align: center;
+  padding: 30px 16px 24px;
+}
+
+.hero-bubble {
+  display: inline-block;
+  background-color: var(--color-accent-yellow-bg);
+  color: #975A16;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 6px 16px;
+  border-radius: var(--radius-full);
+  margin-bottom: 14px;
+  box-shadow: var(--shadow-sm);
+}
+
+.hero-title {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--color-text-main);
+  margin-bottom: 8px;
+}
+
+.hero-desc {
+  font-size: 15px;
+  color: var(--color-text-muted);
+}
+
+.mode-select-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 20px;
+  margin-top: 24px;
+}
+
+@media (max-width: 768px) {
+  .mode-select-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.mode-card {
+  background-color: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: 28px;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-normal);
+}
+
+.mode-card:hover {
+  border-color: var(--color-accent-mint);
+  box-shadow: var(--shadow-md);
+}
+
+.student-card {
+  background: linear-gradient(180deg, #FFFFFF 0%, #F9FDFB 100%);
+  border-color: #C6F6D5;
+}
+
+.teacher-card {
+  background: linear-gradient(180deg, #FFFFFF 0%, #FBF9FF 100%);
+  border-color: #E9D8FD;
+}
+
+.card-icon {
+  font-size: 36px;
+  margin-bottom: 12px;
+}
+
+.mode-card h3 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.mode-card p {
+  font-size: 14px;
+  color: var(--color-text-muted);
+  margin-bottom: 20px;
+}
+
+.student-preview-box {
+  background-color: var(--color-primary-light);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.preview-label {
+  font-size: 14px;
+  color: var(--color-primary-dark);
+}
+
+.preview-name {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--color-primary-dark);
+}
+
+/* ==========================================================================
+   뷰 2: 학생 홈 화면 (Student Home)
+   ========================================================================== */
+.student-welcome-banner {
+  background: linear-gradient(135deg, #E6FFFA 0%, #FEFCBF 100%);
+  border-radius: var(--radius-xl);
+  padding: 24px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(79, 209, 197, 0.2);
+}
+
+.welcome-chip {
+  display: inline-block;
+  background-color: white;
+  color: var(--color-primary-dark);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  margin-bottom: 6px;
+}
+
+.welcome-name {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--color-text-main);
+  margin-bottom: 4px;
+}
+
+.welcome-quote {
+  font-size: 14px;
+  color: #4A5568;
+}
+
+.welcome-badge-icon {
+  font-size: 48px;
+}
+
+/* 핵심 요약 통계 그리드 */
+.stats-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background-color: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: var(--shadow-sm);
+}
+
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+.bg-mint { background-color: var(--color-accent-mint-bg); }
+.bg-yellow { background-color: var(--color-accent-yellow-bg); }
+.bg-pink { background-color: var(--color-accent-coral-bg); }
+
+.stat-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-label {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  font-weight: 600;
+}
+
+.stat-value {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--color-text-main);
+  line-height: 1.1;
+}
+
+.stat-value small {
+  font-size: 15px;
+  font-weight: 600;
+  margin-left: 2px;
+  color: var(--color-text-muted);
+}
+
+/* 현재 도전 곡 카드 */
+.current-challenge-card {
+  background-color: var(--color-accent-blue-bg);
+  border: 2px solid #BEE3F8;
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  margin-bottom: 24px;
+}
+
+.challenge-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.challenge-tag {
+  font-size: 12px;
+  font-weight: 700;
+  color: #2B6CB0;
+  text-transform: uppercase;
+}
+
+.challenge-stage-badge {
+  background-color: #3182CE;
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+}
+
+.challenge-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: #2C5282;
+  margin-bottom: 4px;
+}
+
+.challenge-tip {
+  font-size: 14px;
+  color: #4A5568;
+}
+
+/* 액션 버튼 그룹 */
+.action-buttons-group {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 30px;
+}
+
+.btn-hero {
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  border-radius: var(--radius-xl);
+  box-shadow: 0 8px 20px rgba(56, 161, 105, 0.25);
+  font-size: 20px;
+}
+
+.btn-hero-icon {
+  font-size: 36px;
+}
+
+.btn-hero-text {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+}
+
+.btn-hero-text strong {
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.btn-hero-text small {
+  font-size: 13px;
+  opacity: 0.9;
+  font-weight: 500;
+}
+
+/* 최근 연습 기록 섹션 */
+.recent-records-section {
+  background-color: var(--color-surface-soft);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  border: 1px solid var(--color-border);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.section-header h4 {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.section-sub {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.recent-records-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.record-item-card {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+}
+
+.record-main-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.record-emoji {
+  font-size: 26px;
+}
+
+.record-titles strong {
+  font-size: 15px;
+  font-weight: 700;
+  display: block;
+}
+
+.record-meta {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.record-badge-count {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary-dark);
+  font-size: 14px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+}
+
+.empty-state-text {
+  text-align: center;
+  padding: 24px;
+  color: var(--color-text-muted);
+  font-size: 14px;
+}
+
+/* ==========================================================================
+   뷰 3: 오늘의 연습 기록 작성 화면 (Practice Form)
+   ========================================================================== */
+.form-header-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--color-border);
+}
+
+.form-header-bar h2 {
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.step-indicator {
+  font-size: 13px;
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.practice-record-form {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.form-card {
+  background-color: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.form-card-title {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.step-num {
+  background-color: var(--color-primary);
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 15px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(56, 161, 105, 0.3);
+}
+
+.form-card-title h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-text-main);
+  line-height: 1.3;
+}
+
+.form-card-title p {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
+
+/* 집중 영역 선택 (Choice Grid) */
+.choice-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 10px;
+}
+
+.choice-pill {
+  cursor: pointer;
+}
+
+.choice-pill input[type="radio"] {
+  display: none;
+}
+
+.choice-pill-content {
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background-color: var(--color-surface);
+  transition: var(--transition-fast);
+  user-select: none;
+}
+
+.choice-pill input[type="radio"]:checked + .choice-pill-content {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary-light);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.pill-icon {
+  font-size: 28px;
+  margin-bottom: 6px;
+}
+
+.pill-text {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text-main);
+}
+
+.pill-desc {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
+
+/* 카운터 컨테이너 */
+.counter-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 10px 0;
+}
+
+.counter-display {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 6px;
+}
+
+.counter-value {
+  font-size: 64px;
+  font-weight: 900;
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+.counter-unit {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.counter-actions {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.btn-tap-counter {
+  background: linear-gradient(135deg, #38A169 0%, #48BB78 100%);
+  color: white;
+  padding: 22px 28px;
+  border-radius: var(--radius-xl);
+  border: none;
+  font-size: 22px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  box-shadow: 0 8px 24px rgba(56, 161, 105, 0.3);
+  cursor: pointer;
+  transition: transform 0.1s cubic-bezier(0.1, 0.9, 0.2, 1);
+}
+
+.btn-tap-counter:active {
+  transform: scale(0.96);
+  box-shadow: 0 4px 12px rgba(56, 161, 105, 0.2);
+}
+
+.counter-sub-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.stepper-mini {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-step {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--color-border);
+  background-color: var(--color-surface);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-text-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.btn-step:hover {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary-light);
+}
+
+/* 자기평가 카드 그리드 */
+.self-eval-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+@media (max-width: 640px) {
+  .self-eval-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.eval-card {
+  cursor: pointer;
+}
+
+.eval-card input[type="radio"] {
+  display: none;
+}
+
+.eval-card-content {
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 20px 16px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--color-surface);
+  transition: var(--transition-fast);
+  user-select: none;
+  min-height: 140px;
+  justify-content: center;
+}
+
+.eval-emoji {
+  font-size: 38px;
+}
+
+.eval-title {
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.eval-desc {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  line-height: 1.3;
+}
+
+.eval-card input[type="radio"]:checked + .eval-good {
+  border-color: #38A169;
+  background-color: #F0FFF4;
+  box-shadow: 0 4px 14px rgba(56, 161, 105, 0.2);
+  transform: translateY(-2px);
+}
+
+.eval-card input[type="radio"]:checked + .eval-so-so {
+  border-color: #D69E2E;
+  background-color: #FFFFF0;
+  box-shadow: 0 4px 14px rgba(214, 158, 46, 0.2);
+  transform: translateY(-2px);
+}
+
+.eval-card input[type="radio"]:checked + .eval-need-more {
+  border-color: #E53E3E;
+  background-color: #FFF5F5;
+  box-shadow: 0 4px 14px rgba(229, 62, 62, 0.2);
+  transform: translateY(-2px);
+}
+
+.selected-song-stage-box {
+  margin-top: 10px;
+  background-color: var(--color-surface-soft);
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stage-guide-label {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.form-submit-area {
+  padding-top: 10px;
+  margin-bottom: 20px;
+}
+
+/* ==========================================================================
+   뷰 4: 연습 완료 화면 (Complete View)
+   ========================================================================== */
+.complete-card {
+  text-align: center;
+  padding: 40px 24px;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.complete-confetti {
+  font-size: 64px;
+  margin-bottom: 14px;
+  animation: bounce 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes bounce {
+  from { transform: translateY(0); }
+  to { transform: translateY(-10px); }
+}
+
+.complete-title {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--color-text-main);
+  margin-bottom: 8px;
+}
+
+.complete-sub {
+  font-size: 15px;
+  color: var(--color-text-muted);
+  margin-bottom: 28px;
+}
+
+.complete-summary-box {
+  background-color: var(--color-surface-soft);
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  margin-bottom: 30px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  text-align: left;
+}
+
+.summary-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.s-label {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  font-weight: 600;
+}
+
+.s-val {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--color-text-main);
+  margin-top: 2px;
+}
+
+.complete-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ==========================================================================
+   뷰 5: 나의 성장 기록 화면 (Growth View)
+   ========================================================================== */
+.growth-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.g-stat-card {
+  background: linear-gradient(180deg, #FFFFFF 0%, #F9FBF9 100%);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 18px 16px;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+}
+
+.g-stat-label {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  font-weight: 600;
+  display: block;
+}
+
+.g-stat-num {
+  font-size: 32px;
+  font-weight: 900;
+  color: var(--color-primary);
+  display: block;
+  margin: 4px 0;
+}
+
+.g-stat-card small {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+/* 선생님 응원 배너 */
+.teacher-feedback-banner {
+  background: linear-gradient(135deg, #FAF5FF 0%, #EBF8FF 100%);
+  border: 2px solid #D6BCFA;
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.feedback-badge {
+  font-size: 13px;
+  font-weight: 700;
+  color: #6B46C1;
+  margin-bottom: 6px;
+}
+
+.feedback-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2D3748;
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+
+.feedback-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.feedback-date {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.growth-card {
+  background-color: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.growth-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.growth-card-header h4 {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+/* CSS 막대 차트 */
+.chart-container {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  height: 180px;
+  padding: 20px 10px 10px;
+  border-bottom: 2px solid var(--color-border);
+  gap: 8px;
+}
+
+.chart-bar-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.chart-bar-wrapper {
+  width: 100%;
+  max-width: 44px;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.chart-bar {
+  width: 100%;
+  background: linear-gradient(180deg, #4FD1C5 0%, #38A169 100%);
+  border-radius: 8px 8px 0 0;
+  min-height: 4px;
+  transition: height 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+
+.chart-val {
+  position: absolute;
+  top: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+}
+
+.chart-date-label {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin-top: 8px;
+  font-weight: 600;
+}
+
+/* 곡별 단계 진행 리스트 */
+.song-stages-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.song-stage-item {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  background-color: var(--color-surface-soft);
+}
+
+.song-stage-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.song-stage-title {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.song-stage-count {
+  font-size: 13px;
+  color: var(--color-primary-dark);
+  font-weight: 600;
+}
+
+.stage-step-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.stage-step-pill {
+  height: 8px;
+  border-radius: var(--radius-full);
+  background-color: #E2E8F0;
+  transition: var(--transition-normal);
+}
+
+.stage-step-pill.completed {
+  background-color: var(--color-primary);
+}
+
+.stage-step-pill.active {
+  background-color: var(--color-accent-mint);
+}
+
+/* 타임라인 일지 */
+.records-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.timeline-item {
+  border-left: 3px solid var(--color-primary);
+  padding-left: 16px;
+  padding-bottom: 12px;
+  position: relative;
+}
+
+.timeline-item::before {
+  content: "";
+  position: absolute;
+  left: -7px;
+  top: 4px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  border: 2px solid white;
+}
+
+.timeline-date {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  font-weight: 600;
+}
+
+.timeline-content-card {
+  background-color: var(--color-surface-soft);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  margin-top: 6px;
+}
+
+.t-card-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.t-card-comment {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--color-border);
+  font-size: 13px;
+  color: #4A5568;
+}
+
+/* ==========================================================================
+   뷰 6 & 7: 교사 대시보드 및 관리 센터 (Teacher Views)
+   ========================================================================== */
+.teacher-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--color-border);
+}
+
+.teacher-header-bar h2 {
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.teacher-header-bar p {
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+.teacher-header-btns {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.teacher-overview-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 768px) {
+  .teacher-overview-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.t-card {
+  background-color: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+}
+
+.t-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.t-value {
+  font-size: 22px;
+  font-weight: 800;
+  margin-top: 4px;
+  color: var(--color-text-main);
+}
+
+.t-badge {
+  font-size: 11px;
+  background-color: var(--color-primary-light);
+  color: var(--color-primary-dark);
+  padding: 2px 6px;
+  border-radius: var(--radius-full);
+  margin-top: 4px;
+  display: inline-block;
+  align-self: flex-start;
+  font-weight: 700;
+}
+
+.teacher-card-container {
+  background-color: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+}
+
+.teacher-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.teacher-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  text-align: left;
+}
+
+.teacher-table th {
+  background-color: var(--color-surface-soft);
+  color: var(--color-text-muted);
+  font-weight: 700;
+  padding: 12px 14px;
+  border-bottom: 2px solid var(--color-border);
+  white-space: nowrap;
+}
+
+.teacher-table td {
+  padding: 14px;
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: middle;
+}
+
+.teacher-table tbody tr:hover {
+  background-color: #F8FAF9;
+}
+
+/* 관리 탭 네비게이션 */
+.manage-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid var(--color-border);
+  padding-bottom: 8px;
+  overflow-x: auto;
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  white-space: nowrap;
+}
+
+.tab-btn:hover {
+  color: var(--color-primary);
+  background-color: var(--color-surface-soft);
+}
+
+.tab-btn.active {
+  color: var(--color-primary-dark);
+  background-color: var(--color-primary-light);
+}
+
+.tab-pane {
+  display: none;
+}
+
+.tab-pane.active {
+  display: block;
+}
+
+.manage-box {
+  background-color: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+}
+
+.box-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sheet-status-box {
+  background-color: var(--color-surface-soft);
+  padding: 14px 18px;
+  border-radius: var(--radius-md);
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.status-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.status-local { background-color: #ECC94B; }
+.status-connected { background-color: #38A169; }
+.status-error { background-color: #E53E3E; }
+
+.guide-box {
+  background-color: var(--color-accent-blue-bg);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  border: 1px solid #BEE3F8;
+}
+
+.guide-box h4 {
+  font-size: 14px;
+  color: #2B6CB0;
+  margin-bottom: 4px;
+}
+
+.guide-box p {
+  font-size: 13px;
+  color: #4A5568;
+}
+
+/* ==========================================================================
+   공통 폼 요소 및 버튼
+   ========================================================================== */
+.form-group {
+  margin-bottom: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group label {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text-main);
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.label-hint {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  font-weight: 400;
+}
+
+.form-input, .form-select, .form-textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 15px;
+  font-family: inherit;
+  background-color: var(--color-surface);
+  color: var(--color-text-main);
+  transition: var(--transition-fast);
+}
+
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(56, 161, 105, 0.15);
+}
+
+.select-lg {
+  padding: 14px 16px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.form-row {
+  display: flex;
+  gap: 12px;
+}
+
+.flex-1 { flex: 1; }
+
+.form-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0 18px;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.form-checkbox {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-primary);
+}
+
+.textarea-counter {
+  text-align: right;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+/* 버튼 */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  font-size: 15px;
+  font-weight: 700;
+  border-radius: var(--radius-md);
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  user-select: none;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-dark);
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+.btn-secondary {
+  background-color: #6B46C1;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background-color: #553C9A;
+}
+
+.btn-outline {
+  background-color: transparent;
+  border-color: var(--color-border);
+  color: var(--color-text-main);
+}
+
+.btn-outline:hover {
+  border-color: var(--color-text-muted);
+  background-color: var(--color-surface-soft);
+}
+
+.btn-ghost {
+  background-color: transparent;
+  color: var(--color-text-muted);
+}
+
+.btn-ghost:hover {
+  background-color: var(--color-surface-soft);
+  color: var(--color-text-main);
+}
+
+.btn-soft {
+  background-color: var(--color-surface-soft);
+  color: var(--color-text-main);
+  border: 2px solid var(--color-border);
+}
+
+.btn-soft:hover {
+  background-color: #EDF2F7;
+}
+
+.btn-lg {
+  padding: 16px 24px;
+  font-size: 17px;
+  border-radius: var(--radius-lg);
+}
+
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 13px;
+  border-radius: var(--radius-sm);
+}
+
+.btn-xs {
+  padding: 4px 8px;
+  font-size: 11px;
+  border-radius: 4px;
+}
+
+.btn-block {
+  width: 100%;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* 뱃지 */
+.badge {
+  display: inline-block;
+  padding: 3px 8px;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: var(--radius-full);
+}
+
+.badge-primary {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary-dark);
+}
+
+/* 모달 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 16px;
+}
+
+.modal-dialog {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-xl);
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+  padding: 24px;
+}
+
+.modal-dialog.modal-sm {
+  max-width: 440px;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.btn-close {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: var(--color-text-muted);
+}
+
+.modal-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.m-stat {
+  background-color: var(--color-surface-soft);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  text-align: center;
+}
+
+.m-stat span {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  display: block;
+}
+
+.m-stat strong {
+  font-size: 18px;
+  color: var(--color-text-main);
+}
+
+.feedback-input-box {
+  background-color: #FAF5FF;
+  border: 1px solid #E9D8FD;
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.feedback-input-box h4 {
+  font-size: 14px;
+  color: #6B46C1;
+  margin-bottom: 8px;
+}
+
+.modal-records-history h4 {
+  font-size: 15px;
+  margin-bottom: 10px;
+}
+
+.modal-records-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+/* 토스트 알림 */
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 150;
+  pointer-events: none;
+}
+
+.toast {
+  background-color: #2D3748;
+  color: white;
+  padding: 12px 20px;
+  border-radius: var(--radius-full);
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: toastUp 0.3s ease;
+}
+
+.toast.toast-success {
+  background-color: #2F855A;
+}
+
+.toast.toast-error {
+  background-color: #C53030;
+}
+
+@keyframes toastUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 헬퍼 클래스 */
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.tracking-widest { letter-spacing: 0.25em; }
+.text-primary { color: var(--color-primary); }
+.text-accent { color: #DD6B20; }
+.text-muted { color: var(--color-text-muted); }
+.mt-2 { margin-top: 8px; }
+.mt-3 { margin-top: 12px; }
+.mt-4 { margin-top: 16px; }
+
+</style>
+</head>
+<body>
+  <div id="app" class="app-container">
+    <!-- 상단 글로벌 헤더 -->
+    <header class="app-header">
+      <div class="header-logo" id="headerLogoBtn" role="button" tabindex="0">
+        <span class="logo-icon">🎵</span>
+        <div class="logo-text">
+          <h1>리코더 성장 일지</h1>
+          <span class="logo-sub">나의 즐거운 음악 여행</span>
+        </div>
+      </div>
+      <div class="header-user" id="headerUserArea">
+        <div class="user-badge" id="currentUserBadge" style="display: none;">
+          <span class="badge-role" id="badgeRoleText">학생</span>
+          <span class="badge-name" id="badgeNameText">홍길동</span>
+        </div>
+        <button type="button" class="btn btn-sm btn-ghost" id="logoutBtn" style="display: none;">
+          나가기
+        </button>
+      </div>
+    </header>
+
+    <!-- 메인 컨텐츠 영역 (뷰 전환) -->
+    <main class="main-content">
+
+      <!-- ================= 1. 시작 화면 ================= -->
+      <section id="view-start" class="view active">
+        <div class="welcome-hero">
+          <div class="hero-bubble">🎶 삐뽀삐뽀~ 즐겁게 불고 쑥쑥 자라요!</div>
+          <h2 class="hero-title">오늘은 어떤 곡을 연습해볼까요?</h2>
+          <p class="hero-desc">나의 연습 과정을 매일 1분 만에 쏙! 기록하고 성장을 지켜보세요.</p>
+        </div>
+
+        <div class="mode-select-grid">
+          <!-- 학생 시작 카드 -->
+          <div class="mode-card student-card">
+            <div class="card-icon">🎒</div>
+            <h3>학생으로 시작하기</h3>
+            <p>내 학급과 번호를 선택하고 오늘 연습을 시작해요.</p>
+            
+            <form id="studentLoginForm" class="login-form">
+              <div class="form-row">
+                <div class="form-group flex-1">
+                  <label for="selectClass">학급 선택</label>
+                  <select id="selectClass" class="form-select" required>
+                    <option value="">학급을 고르세요</option>
+                  </select>
+                </div>
+                <div class="form-group flex-1">
+                  <label for="selectStudentNumber">번호 선택</label>
+                  <select id="selectStudentNumber" class="form-select" disabled required>
+                    <option value="">번호를 고르세요</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="student-preview-box" id="studentPreviewBox" style="display: none;">
+                <span class="preview-label">학생 이름:</span>
+                <span class="preview-name" id="studentPreviewName">-</span>
+              </div>
+
+              <div class="form-group" id="studentPinGroup" style="display: none;">
+                <label for="studentPinInput">
+                  확인 번호 (4자리)
+                  <span class="label-hint">처음 접속 시 기본값: 0000</span>
+                </label>
+                <input type="password" id="studentPinInput" class="form-input text-center tracking-widest" maxlength="4" placeholder="0000" inputmode="numeric">
+              </div>
+
+              <div class="form-check" id="rememberTabletGroup" style="display: none;">
+                <input type="checkbox" id="rememberTabletCheck" class="form-checkbox">
+                <label for="rememberTabletCheck">이 태블릿에 내 정보 기억하기 (다음부터 바로 시작)</label>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-block btn-lg" id="btnStudentStart" disabled>
+                🎵 리코더 일지 시작하기
+              </button>
+            </form>
+          </div>
+
+          <!-- 선생님 입장 카드 -->
+          <div class="mode-card teacher-card">
+            <div class="card-icon">👩‍🏫</div>
+            <h3>선생님 모드</h3>
+            <p>학급 전체 연습 현황 확인 및 곡·명단 관리</p>
+
+            <form id="teacherLoginForm" class="login-form">
+              <div class="form-group">
+                <label for="teacherPinInput">선생님 비밀번호</label>
+                <input type="password" id="teacherPinInput" class="form-input" placeholder="비밀번호를 입력하세요 (기본: 1234)" required>
+              </div>
+              <button type="submit" class="btn btn-secondary btn-block">
+                선생님 대시보드 입장
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 2. 학생 홈 화면 ================= -->
+      <section id="view-student-home" class="view">
+        <div class="student-welcome-banner">
+          <div class="welcome-info">
+            <span class="welcome-chip" id="homeClassNumberChip">3학년 1반 1번</span>
+            <h2 class="welcome-name"><span id="homeStudentName">홍길동</span> 학생, 반가워요! 🎵</h2>
+            <p class="welcome-quote">꾸준히 연습한 리코더 소리는 마법처럼 예뻐져요.</p>
+          </div>
+          <div class="welcome-badge-icon">🌟</div>
+        </div>
+
+        <!-- 3개 핵심 요약 카드 -->
+        <div class="stats-summary-grid">
+          <div class="stat-card">
+            <div class="stat-icon bg-mint">📅</div>
+            <div class="stat-content">
+              <span class="stat-label">이번 주 연습</span>
+              <strong class="stat-value"><span id="statWeeklyDays">0</span><small>일</small></strong>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon bg-yellow">🎺</div>
+            <div class="stat-content">
+              <span class="stat-label">연습한 곡</span>
+              <strong class="stat-value"><span id="statTotalSongs">0</span><small>곡</small></strong>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon bg-pink">✨</div>
+            <div class="stat-content">
+              <span class="stat-label">총 연습 횟수</span>
+              <strong class="stat-value"><span id="statTotalCount">0</span><small>회</small></strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- 현재 도전 곡 카드 -->
+        <div class="current-challenge-card" id="currentChallengeCard">
+          <div class="challenge-header">
+            <span class="challenge-tag">지금 도전 중인 곡</span>
+            <span class="challenge-stage-badge" id="challengeStageBadge">1단계: 악보와 운지</span>
+          </div>
+          <h3 class="challenge-title" id="challengeSongTitle">비행기</h3>
+          <p class="challenge-tip" id="challengeTip">호흡을 고르게 하고 시-라-솔 손가락 구멍을 꼼꼼히 막아보세요!</p>
+        </div>
+
+        <!-- 핵심 액션 버튼 -->
+        <div class="action-buttons-group">
+          <button type="button" class="btn btn-primary btn-hero" id="btnGoPractice">
+            <span class="btn-hero-icon">🎵</span>
+            <div class="btn-hero-text">
+              <strong>오늘의 연습 기록하기</strong>
+              <small>불렀던 횟수와 느낀 점을 1분 만에 쏙!</small>
+            </div>
+          </button>
+          <button type="button" class="btn btn-soft btn-lg" id="btnGoGrowth">
+            📈 나의 성장 기록 보기
+          </button>
+        </div>
+
+        <!-- 최근 연습 기록 3개 프리뷰 -->
+        <div class="recent-records-section">
+          <div class="section-header">
+            <h4>최근 나의 연습 기록</h4>
+            <span class="section-sub">최근 3회</span>
+          </div>
+          <div class="recent-records-list" id="homeRecentRecordsList">
+            <!-- JS 동적 렌더링 -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 3. 오늘의 연습 기록 화면 ================= -->
+      <section id="view-practice-form" class="view">
+        <div class="form-header-bar">
+          <button type="button" class="btn btn-sm btn-ghost" id="btnPracticeBack">
+            ← 뒤로가기
+          </button>
+          <h2>오늘의 연습 기록하기</h2>
+          <span class="step-indicator">순서대로 콕콕 선택해요</span>
+        </div>
+
+        <form id="practiceRecordForm" class="practice-record-form" novalidate>
+          <!-- ① 오늘 연습한 곡 -->
+          <div class="form-card">
+            <div class="form-card-title">
+              <span class="step-num">1</span>
+              <div>
+                <h3>어떤 곡을 연습했나요?</h3>
+                <p>선생님이 등록해 주신 곡 목록에서 골라보세요.</p>
+              </div>
+            </div>
+            <div class="form-group">
+              <select id="practiceSongSelect" class="form-select select-lg" required>
+                <option value="">연습한 곡을 선택하세요</option>
+              </select>
+            </div>
+            <div class="selected-song-stage-box" id="selectedSongStageBox" style="display: none;">
+              <span class="stage-guide-label">현재 연습 단계:</span>
+              <span class="badge badge-primary" id="selectedSongStageText">1단계 악보와 운지</span>
+            </div>
+          </div>
+
+          <!-- ② 오늘 집중해서 연습한 부분 -->
+          <div class="form-card">
+            <div class="form-card-title">
+              <span class="step-num">2</span>
+              <div>
+                <h3>어떤 부분을 가장 집중해서 연습했나요?</h3>
+                <p>오늘 내가 신경 쓴 포인트 1가지를 선택해요.</p>
+              </div>
+            </div>
+            <div class="choice-grid" id="focusAreaGrid">
+              <label class="choice-pill">
+                <input type="radio" name="focusArea" value="운지법" required>
+                <span class="choice-pill-content">
+                  <span class="pill-icon">👆</span>
+                  <span class="pill-text">운지법</span>
+                  <span class="pill-desc">구멍 꼭꼭 막기</span>
+                </span>
+              </label>
+              <label class="choice-pill">
+                <input type="radio" name="focusArea" value="호흡">
+                <span class="choice-pill-content">
+                  <span class="pill-icon">💨</span>
+                  <span class="pill-text">호흡</span>
+                  <span class="pill-desc">맑고 부드럽게</span>
+                </span>
+              </label>
+              <label class="choice-pill">
+                <input type="radio" name="focusArea" value="박자">
+                <span class="choice-pill-content">
+                  <span class="pill-icon">⏱️</span>
+                  <span class="pill-text">박자</span>
+                  <span class="pill-desc">일정한 빠르기</span>
+                </span>
+              </label>
+              <label class="choice-pill">
+                <input type="radio" name="focusArea" value="음 연결">
+                <span class="choice-pill-content">
+                  <span class="pill-icon">🎶</span>
+                  <span class="pill-text">음 연결</span>
+                  <span class="pill-desc">끊김 없이 매끄럽게</span>
+                </span>
+              </label>
+              <label class="choice-pill">
+                <input type="radio" name="focusArea" value="곡 전체 연주">
+                <span class="choice-pill-content">
+                  <span class="pill-icon">🎼</span>
+                  <span class="pill-text">곡 전체 연주</span>
+                  <span class="pill-desc">처음부터 끝까지</span>
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <!-- ③ 연습 횟수 -->
+          <div class="form-card">
+            <div class="form-card-title">
+              <span class="step-num">3</span>
+              <div>
+                <h3>몇 번 불렀나요?</h3>
+                <p>한 번 불 때마다 '연습 1회 완료' 버튼을 눌러보세요.</p>
+              </div>
+            </div>
+            
+            <div class="counter-container">
+              <div class="counter-display">
+                <span class="counter-value" id="practiceCountDisplay">1</span>
+                <span class="counter-unit">회</span>
+              </div>
+
+              <!-- 초등학생을 위한 대형 액션 버튼 -->
+              <div class="counter-actions">
+                <button type="button" class="btn btn-tap-counter" id="btnCountAddMain">
+                  <span class="tap-icon">🎵</span>
+                  <span class="tap-text">연습 1회 완료! (+1)</span>
+                </button>
+                <div class="counter-sub-actions">
+                  <button type="button" class="btn btn-outline btn-sm" id="btnCountCancelLast">
+                    ↩️ 잘못 눌렀어요 (-1)
+                  </button>
+                  <div class="stepper-mini">
+                    <button type="button" class="btn-step" id="btnCountMinus" title="1회 줄이기">-</button>
+                    <button type="button" class="btn-step" id="btnCountPlus" title="1회 늘리기">+</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ④ 오늘의 자기평가 -->
+          <div class="form-card">
+            <div class="form-card-title">
+              <span class="step-num">4</span>
+              <div>
+                <h3>스스로 연주를 돌아보아요</h3>
+                <p>솔직하게 오늘 내 소리가 어땠는지 평가해주세요.</p>
+              </div>
+            </div>
+
+            <div class="self-eval-grid" id="selfEvalGrid">
+              <label class="eval-card">
+                <input type="radio" name="selfEval" value="잘했어요" required>
+                <div class="eval-card-content eval-good">
+                  <span class="eval-emoji">😄</span>
+                  <strong class="eval-title">잘했어요!</strong>
+                  <span class="eval-desc">목표한 부분을 맑은 소리로 잘 연주했어요.</span>
+                </div>
+              </label>
+              <label class="eval-card">
+                <input type="radio" name="selfEval" value="조금씩 나아지고 있어요">
+                <div class="eval-card-content eval-so-so">
+                  <span class="eval-emoji">🙂</span>
+                  <strong class="eval-title">조금씩 나아져요</strong>
+                  <span class="eval-desc">어려웠던 곳이 점점 편해지고 있어요.</span>
+                </div>
+              </label>
+              <label class="eval-card">
+                <input type="radio" name="selfEval" value="연습이 더 필요해요">
+                <div class="eval-card-content eval-need-more">
+                  <span class="eval-emoji">😐</span>
+                  <strong class="eval-title">더 연습할래요</strong>
+                  <span class="eval-desc">손가락이나 호흡 조절이 더 필요해요.</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- ⑤ 오늘의 연습 한마디 (선택) -->
+          <div class="form-card">
+            <div class="form-card-title">
+              <span class="step-num">5</span>
+              <div>
+                <h3>연습 한마디 <small class="text-muted">(선택)</small></h3>
+                <p>잘된 점이나 다음번에 조심할 점을 짧게 적어보세요.</p>
+              </div>
+            </div>
+            <div class="form-group">
+              <textarea id="practiceCommentInput" class="form-textarea" rows="2" maxlength="150" placeholder="예: '파' 소리가 삑사리 나지 않아서 기뻤어요!"></textarea>
+              <div class="textarea-counter"><span id="commentCharCount">0</span>/150자</div>
+            </div>
+          </div>
+
+          <!-- 저장 버튼 -->
+          <div class="form-submit-area">
+            <button type="submit" class="btn btn-primary btn-block btn-hero" id="btnSavePractice">
+              💾 연습 기록 저장하기
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- ================= 4. 연습 완료 화면 ================= -->
+      <section id="view-complete" class="view">
+        <div class="complete-card">
+          <div class="complete-confetti">🎉</div>
+          <h2 class="complete-title">오늘도 한 걸음 성장했어요!</h2>
+          <p class="complete-sub">선생님과 나만의 성장 일지에 연습 기록이 쏙 저장되었어요.</p>
+
+          <div class="complete-summary-box">
+            <div class="summary-item">
+              <span class="s-label">연습한 곡</span>
+              <strong class="s-val" id="compSongTitle">비행기</strong>
+            </div>
+            <div class="summary-item">
+              <span class="s-label">연습 횟수</span>
+              <strong class="s-val" id="compCount">5회</strong>
+            </div>
+            <div class="summary-item">
+              <span class="s-label">집중한 부분</span>
+              <strong class="s-val" id="compFocus">운지법</strong>
+            </div>
+            <div class="summary-item">
+              <span class="s-label">자기평가</span>
+              <strong class="s-val" id="compEval">😄 잘했어요!</strong>
+            </div>
+          </div>
+
+          <div class="complete-actions">
+            <button type="button" class="btn btn-primary btn-lg btn-block" id="btnCompGoGrowth">
+              📈 나의 성장 기록 보러가기
+            </button>
+            <button type="button" class="btn btn-outline btn-block" id="btnCompGoHome">
+              🏠 홈으로 돌아가기
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 5. 나의 성장 기록 화면 ================= -->
+      <section id="view-student-growth" class="view">
+        <div class="form-header-bar">
+          <button type="button" class="btn btn-sm btn-ghost" id="btnGrowthBack">
+            ← 홈으로
+          </button>
+          <h2>나의 성장 기록</h2>
+          <span class="step-indicator">어제의 나보다 한 뼘 더 자란 음악 실력</span>
+        </div>
+
+        <!-- 누적 성장 통계 -->
+        <div class="growth-stats-grid">
+          <div class="g-stat-card">
+            <span class="g-stat-label">누적 연습 일수</span>
+            <strong class="g-stat-num" id="gStatDays">0</strong>
+            <small>일 동안 쉼 없이</small>
+          </div>
+          <div class="g-stat-card">
+            <span class="g-stat-label">누적 연습 횟수</span>
+            <strong class="g-stat-num" id="gStatCounts">0</strong>
+            <small>번의 아름다운 소리</small>
+          </div>
+          <div class="g-stat-card">
+            <span class="g-stat-label">도전한 곡 수</span>
+            <strong class="g-stat-num" id="gStatSongs">0</strong>
+            <small>곡의 멋진 멜로디</small>
+          </div>
+        </div>
+
+        <!-- 선생님의 따뜻한 피드백 영역 -->
+        <div class="teacher-feedback-banner" id="teacherFeedbackBanner" style="display: none;">
+          <div class="feedback-badge">👩‍🏫 선생님의 응원 한마디</div>
+          <p class="feedback-text" id="teacherFeedbackText">-</p>
+          <div class="feedback-footer">
+            <span class="feedback-date" id="teacherFeedbackDate">-</span>
+            <button type="button" class="btn btn-xs btn-primary" id="btnConfirmFeedback">
+              선생님 말씀 확인했어요 👍
+            </button>
+          </div>
+        </div>
+
+        <!-- 주간 연습 기록 그래프 -->
+        <div class="growth-card">
+          <div class="growth-card-header">
+            <h4>📅 최근 7일 연습 횟수 그래프</h4>
+            <span class="text-muted">꾸준함이 실력을 만들어요</span>
+          </div>
+          <div class="chart-container" id="weeklyChartContainer">
+            <!-- JS 동적 생성 막대그래프 -->
+          </div>
+        </div>
+
+        <!-- 곡별 연습 단계 및 진행률 -->
+        <div class="growth-card">
+          <div class="growth-card-header">
+            <h4>🎼 곡별 연습 단계</h4>
+            <span class="text-muted">4단계 완성을 향해 달려가요</span>
+          </div>
+          <div class="song-stages-list" id="growthSongStagesList">
+            <!-- JS 동적 생성 -->
+          </div>
+        </div>
+
+        <!-- 이전 연습 기록 타임라인 -->
+        <div class="growth-card">
+          <div class="growth-card-header">
+            <h4>📜 날짜별 연습 일지</h4>
+            <div class="filter-controls">
+              <select id="growthSongFilter" class="form-select form-select-sm">
+                <option value="ALL">모든 곡 보기</option>
+              </select>
+            </div>
+          </div>
+          <div class="records-timeline" id="growthRecordsTimeline">
+            <!-- JS 렌더링 -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 6. 교사 대시보드 화면 ================= -->
+      <section id="view-teacher-dashboard" class="view">
+        <div class="teacher-header-bar">
+          <div>
+            <h2>👩‍🏫 교사 대시보드</h2>
+            <p>우리 반 학생들의 리코더 연습 현황과 성장을 한눈에 파악해요.</p>
+          </div>
+          <div class="teacher-header-btns">
+            <button type="button" class="btn btn-outline btn-sm" id="btnGoTeacherManage">
+              ⚙️ 곡·학생·시트 관리
+            </button>
+            <button type="button" class="btn btn-ghost btn-sm" id="btnTeacherExit">
+              학생 모드로 가기
+            </button>
+          </div>
+        </div>
+
+        <!-- 교사 통계 요약 4종 -->
+        <div class="teacher-overview-grid">
+          <div class="t-card">
+            <span class="t-label">전체 등록 학생</span>
+            <strong class="t-value" id="tStatTotalStudents">0명</strong>
+          </div>
+          <div class="t-card">
+            <span class="t-label">이번 주 참여 학생</span>
+            <strong class="t-value" id="tStatActiveStudents">0명</strong>
+            <small class="t-badge" id="tStatParticipationRate">참여율 0%</small>
+          </div>
+          <div class="t-card">
+            <span class="t-label">가장 많이 연습한 곡</span>
+            <strong class="t-value text-primary" id="tStatTopSong">-</strong>
+          </div>
+          <div class="t-card">
+            <span class="t-label">어려워하는 연습 요소</span>
+            <strong class="t-value text-accent" id="tStatDifficultFocus">-</strong>
+          </div>
+        </div>
+
+        <!-- 학생별 연습 현황 테이블 -->
+        <div class="teacher-card-container">
+          <div class="teacher-card-header">
+            <h4>📋 학생별 리코더 연습 현황</h4>
+            <div class="table-search-bar">
+              <input type="text" id="teacherStudentSearch" class="form-input form-input-sm" placeholder="학생 이름 검색...">
+            </div>
+          </div>
+          
+          <div class="table-responsive">
+            <table class="teacher-table">
+              <thead>
+                <tr>
+                  <th>학급</th>
+                  <th>번호</th>
+                  <th>이름</th>
+                  <th>연습 일수</th>
+                  <th>총 연습 횟수</th>
+                  <th>최근 연습곡</th>
+                  <th>최근 평가</th>
+                  <th>선생님 피드백</th>
+                  <th>기록 관리</th>
+                </tr>
+              </thead>
+              <tbody id="teacherStudentTableBody">
+                <!-- JS 동적 렌더링 -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 7. 교사 관리 화면 ================= -->
+      <section id="view-teacher-manage" class="view">
+        <div class="teacher-header-bar">
+          <div>
+            <h2>⚙️ 교사 관리 센터</h2>
+            <p>학생 명단, 연습곡, 잘못된 기록 정정 및 구글 시트 연동을 설정합니다.</p>
+          </div>
+          <button type="button" class="btn btn-sm btn-outline" id="btnBackToDashboard">
+            ← 대시보드로 돌아가기
+          </button>
+        </div>
+
+        <!-- 탭 네비게이션 -->
+        <div class="manage-tabs">
+          <button type="button" class="tab-btn active" data-tab="tab-sheet">구글 시트 연동 설정</button>
+          <button type="button" class="tab-btn" data-tab="tab-songs">연습곡 관리</button>
+          <button type="button" class="tab-btn" data-tab="tab-students">학생 명단 관리</button>
+          <button type="button" class="tab-btn" data-tab="tab-records">기록 정정 및 삭제</button>
+        </div>
+
+        <!-- 탭 1: 구글 시트 연동 -->
+        <div id="tab-sheet" class="tab-pane active">
+          <div class="manage-box">
+            <h3>📊 구글 스프레드시트 연동</h3>
+            <p>학생들의 연습 기록과 교사 피드백이 선생님의 구글 드라이브 스프레드시트에 영구 보관됩니다.</p>
+            
+            <div class="sheet-status-box" id="sheetStatusBox">
+              <span class="status-indicator status-local" id="sheetStatusIndicator"></span>
+              <strong id="sheetStatusText">현재 로컬 브라우저 저장소 모드로 작동 중입니다.</strong>
+            </div>
+
+            <form id="sheetConfigForm" class="mt-4">
+              <div class="form-group">
+                <label for="appsScriptUrlInput">
+                  Google Apps Script Web App URL
+                  <span class="label-hint">`setup.md` 가이드에 따라 배포한 웹 앱 URL을 붙여넣으세요.</span>
+                </label>
+                <input type="url" id="appsScriptUrlInput" class="form-input" placeholder="https://script.google.com/macros/s/.../exec">
+              </div>
+
+              <div class="btn-group">
+                <button type="submit" class="btn btn-primary" id="btnSaveSheetUrl">
+                  설정 저장 및 연결 테스트
+                </button>
+                <button type="button" class="btn btn-outline" id="btnManualSync">
+                  🔄 로컬 데이터 즉시 시트로 동기화
+                </button>
+              </div>
+            </form>
+
+            <div class="guide-box mt-4">
+              <h4>💡 처음 연동하시나요?</h4>
+              <p>프로젝트 폴더 내 <code>setup.md</code> 파일을 열람하시면 3분 안에 구글 시트를 만들고 Apps Script를 무료 배포하는 단계별 가이드가 정리되어 있습니다.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 탭 2: 연습곡 관리 -->
+        <div id="tab-songs" class="tab-pane">
+          <div class="manage-box">
+            <div class="box-header">
+              <h3>🎼 연습곡 목록 관리</h3>
+              <button type="button" class="btn btn-sm btn-primary" id="btnOpenAddSongModal">
+                + 새 연습곡 등록
+              </button>
+            </div>
+            <div class="table-responsive mt-3">
+              <table class="teacher-table">
+                <thead>
+                  <tr>
+                    <th>곡 ID</th>
+                    <th>곡명</th>
+                    <th>기본 연습 단계</th>
+                    <th>정렬 순서</th>
+                    <th>관리</th>
+                  </tr>
+                </thead>
+                <tbody id="manageSongTableBody">
+                  <!-- JS 동적 렌더링 -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- 탭 3: 학생 명단 관리 -->
+        <div id="tab-students" class="tab-pane">
+          <div class="manage-box">
+            <div class="box-header">
+              <h3>👥 학생 명단 관리</h3>
+              <button type="button" class="btn btn-sm btn-primary" id="btnOpenAddStudentModal">
+                + 새 학생 등록
+              </button>
+            </div>
+            <div class="table-responsive mt-3">
+              <table class="teacher-table">
+                <thead>
+                  <tr>
+                    <th>학생 ID</th>
+                    <th>학급</th>
+                    <th>번호</th>
+                    <th>이름</th>
+                    <th>확인 PIN</th>
+                    <th>등록일</th>
+                    <th>관리</th>
+                  </tr>
+                </thead>
+                <tbody id="manageStudentTableBody">
+                  <!-- JS 동적 렌더링 -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- 탭 4: 기록 정정 및 삭제 -->
+        <div id="tab-records" class="tab-pane">
+          <div class="manage-box">
+            <div class="box-header">
+              <h3>📝 전체 연습 기록 정정/삭제</h3>
+              <span class="text-muted">학생이 실수로 잘못 등록한 기록을 삭제하거나 수정할 수 있습니다.</span>
+            </div>
+            <div class="table-responsive mt-3">
+              <table class="teacher-table">
+                <thead>
+                  <tr>
+                    <th>일시</th>
+                    <th>학생</th>
+                    <th>곡명</th>
+                    <th>집중 영역</th>
+                    <th>횟수</th>
+                    <th>자기평가</th>
+                    <th>소감</th>
+                    <th>삭제</th>
+                  </tr>
+                </thead>
+                <tbody id="manageRecordsTableBody">
+                  <!-- JS 동적 렌더링 -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- 모달: 교사 피드백 및 학생 상세 일지 보기 -->
+    <div class="modal-overlay" id="studentDetailModal" style="display: none;">
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <h3 id="modalStudentTitle">홍길동 학생의 리코더 일지</h3>
+          <button type="button" class="btn-close" id="btnCloseModal">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="modal-summary-grid">
+            <div class="m-stat">
+              <span>연습 일수</span>
+              <strong id="modalStudentDays">0일</strong>
+            </div>
+            <div class="m-stat">
+              <span>총 연습 횟수</span>
+              <strong id="modalStudentCounts">0회</strong>
+            </div>
+            <div class="m-stat">
+              <span>연습한 곡</span>
+              <strong id="modalStudentSongs">0곡</strong>
+            </div>
+          </div>
+
+          <!-- 선생님 피드백 입력 폼 -->
+          <div class="feedback-input-box">
+            <h4>💬 학생에게 전달할 격려 피드백</h4>
+            <textarea id="modalFeedbackInput" class="form-textarea" rows="2" placeholder="예: '호흡이 정말 안정적이에요. 다음번엔 3단계 전체 연주에 도전해봐요!'"></textarea>
+            <div class="text-right mt-2">
+              <button type="button" class="btn btn-sm btn-primary" id="btnSaveFeedback">
+                피드백 저장하기
+              </button>
+            </div>
+          </div>
+
+          <!-- 학생의 연습 이력 목록 -->
+          <div class="modal-records-history">
+            <h4>최근 연습 기록</h4>
+            <div id="modalRecordsList" class="modal-records-list">
+              <!-- JS 동적 렌더링 -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 모달: 연습곡 추가/수정 -->
+    <div class="modal-overlay" id="addSongModal" style="display: none;">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-header">
+          <h3>연습곡 추가</h3>
+          <button type="button" class="btn-close" id="btnCloseSongModal">✕</button>
+        </div>
+        <form id="addSongForm" class="modal-body">
+          <div class="form-group">
+            <label for="newSongTitle">곡명</label>
+            <input type="text" id="newSongTitle" class="form-input" placeholder="예: 작은 별" required>
+          </div>
+          <div class="form-group">
+            <label for="newSongStage">시작 연습 단계</label>
+            <select id="newSongStage" class="form-select">
+              <option value="악보와 운지 익히기">1. 악보와 운지 익히기</option>
+              <option value="부분 연습">2. 부분 연습</option>
+              <option value="전체 연주">3. 전체 연주</option>
+              <option value="표현하며 연주하기">4. 표현하며 연주하기</option>
+            </select>
+          </div>
+          <div class="text-right mt-4">
+            <button type="submit" class="btn btn-primary">등록하기</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 모달: 학생 추가 -->
+    <div class="modal-overlay" id="addStudentModal" style="display: none;">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-header">
+          <h3>학생 명단 추가</h3>
+          <button type="button" class="btn-close" id="btnCloseStudentModal">✕</button>
+        </div>
+        <form id="addStudentForm" class="modal-body">
+          <div class="form-group">
+            <label for="newStudentClass">학급</label>
+            <input type="text" id="newStudentClass" class="form-input" placeholder="예: 3학년 1반" required>
+          </div>
+          <div class="form-group">
+            <label for="newStudentNum">번호</label>
+            <input type="number" id="newStudentNum" class="form-input" min="1" max="50" placeholder="1" required>
+          </div>
+          <div class="form-group">
+            <label for="newStudentName">이름</label>
+            <input type="text" id="newStudentName" class="form-input" placeholder="예: 김민우" required>
+          </div>
+          <div class="form-group">
+            <label for="newStudentPin">확인 PIN (4자리)</label>
+            <input type="text" id="newStudentPin" class="form-input" maxlength="4" placeholder="0000" value="0000">
+          </div>
+          <div class="text-right mt-4">
+            <button type="submit" class="btn btn-primary">학생 등록</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 글로벌 토스트 알림 컨테이너 -->
+    <div id="toastContainer" class="toast-container"></div>
+  </div>
+
+  <script>
+/**
+ * 🎵 리코더 성장 일지 (Recorder Growth Journal) - script.js
+ * 초등학교 담임교사와 학생을 위한 웹앱 로직
+ * 순수 자바스크립트 (Vanilla JS) & GitHub Pages 호환
+ */
+
+// ==========================================
+// 1. 초기 기본 데이터 (초기 로딩 시 사용)
+// ==========================================
+const DEFAULT_STUDENTS = [
+  { id: 'std-3-1-01', className: '3학년 1반', number: 1, name: '강다은', pin: '0000', createdAt: '2026-03-02' },
+  { id: 'std-3-1-02', className: '3학년 1반', number: 2, name: '김민준', pin: '0000', createdAt: '2026-03-02' },
+  { id: 'std-3-1-03', className: '3학년 1반', number: 3, name: '박서윤', pin: '0000', createdAt: '2026-03-02' },
+  { id: 'std-3-1-04', className: '3학년 1반', number: 4, name: '이도현', pin: '0000', createdAt: '2026-03-02' },
+  { id: 'std-3-1-05', className: '3학년 1반', number: 5, name: '정지우', pin: '0000', createdAt: '2026-03-02' },
+  { id: 'std-3-2-01', className: '3학년 2반', number: 1, name: '최하은', pin: '0000', createdAt: '2026-03-02' },
+  { id: 'std-3-2-02', className: '3학년 2반', number: 2, name: '한시우', pin: '0000', createdAt: '2026-03-02' }
+];
+
+const DEFAULT_SONGS = [
+  { id: 'song-01', title: '비행기', stage: '악보와 운지 익히기', order: 1 },
+  { id: 'song-02', title: '나비야', stage: '악보와 운지 익히기', order: 2 },
+  { id: 'song-03', title: '환희의 송가', stage: '부분 연습', order: 3 },
+  { id: 'song-04', title: '에델바이스', stage: '전체 연주', order: 4 },
+  { id: 'song-05', title: '할아버지의 낡은 시계', stage: '표현하며 연주하기', order: 5 }
+];
+
+// 최근 날짜 포맷 함수 (YYYY-MM-DD)
+function getDaysAgoString(daysAgo) {
+  const d = new Date();
+  d.setDate(d.getDate() - daysAgo);
+  return d.toISOString().split('T')[0];
+}
+
+const DEFAULT_RECORDS = [
+  {
+    id: 'rec-init-01',
+    createdAt: getDaysAgoString(3) + ' 15:20',
+    dateOnly: getDaysAgoString(3),
+    studentId: 'std-3-1-01',
+    songTitle: '비행기',
+    focusArea: '운지법',
+    count: 4,
+    selfEval: '잘했어요',
+    comment: '시-라-솔 손가락 구멍을 꽉 막았더니 맑은 소리가 났어요!',
+    teacherFeedback: '손 모양이 아주 예뻐졌어요. 호흡도 일정해서 듣기 좋네요!',
+    feedbackConfirmed: true
+  },
+  {
+    id: 'rec-init-02',
+    createdAt: getDaysAgoString(1) + ' 16:10',
+    dateOnly: getDaysAgoString(1),
+    studentId: 'std-3-1-01',
+    songTitle: '환희의 송가',
+    focusArea: '호흡',
+    count: 3,
+    selfEval: '조금씩 나아지고 있어요',
+    comment: '높은 음 불 때 바람을 살살 부는 걸 연습했어요.',
+    teacherFeedback: '좋은 연습 방법이에요! 높은 도, 레도 무리 없이 연주할 수 있을 거예요.',
+    feedbackConfirmed: false
+  },
+  {
+    id: 'rec-init-03',
+    createdAt: getDaysAgoString(2) + ' 14:05',
+    dateOnly: getDaysAgoString(2),
+    studentId: 'std-3-1-02',
+    songTitle: '나비야',
+    focusArea: '박자',
+    count: 5,
+    selfEval: '잘했어요',
+    comment: '메트로놈 소리에 맞춰서 끝까지 틀리지 않고 불렀어요.',
+    teacherFeedback: '',
+    feedbackConfirmed: false
+  }
+];
+
+// ==========================================
+// 2. 앱 전역 상태 관리
+// ==========================================
+class RecorderApp {
+  constructor() {
+    this.students = this.loadStorage('recorder_students', DEFAULT_STUDENTS);
+    this.songs = this.loadStorage('recorder_songs', DEFAULT_SONGS);
+    this.records = this.loadStorage('recorder_records', DEFAULT_RECORDS);
+    this.appsScriptUrl = localStorage.getItem('recorder_apps_script_url') || '';
+    this.teacherPin = localStorage.getItem('recorder_teacher_pin') || '1234';
+
+    this.currentStudent = null;
+    this.isTeacher = false;
+    this.practiceCount = 1;
+    this.lastSavedRecord = null;
+    this.selectedStudentForModal = null;
+
+    this.initElements();
+    this.bindEvents();
+    this.initApp();
+  }
+
+  // 로컬 스토리지 안전 읽기
+  loadStorage(key, fallback) {
+    try {
+      const data = localStorage.getItem(key);
+      return data ? JSON.parse(data) : fallback;
+    } catch (e) {
+      console.warn('Storage read failed:', key, e);
+      return fallback;
+    }
+  }
+
+  // 로컬 스토리지 안전 쓰기
+  saveStorage(key, data) {
+    try {
+      localStorage.setItem(key, JSON.stringify(data));
+    } catch (e) {
+      console.error('Storage write failed:', key, e);
+    }
+  }
+
+  // DOM 엘리먼트 캐싱
+  initElements() {
+    // 뷰 섹션들
+    this.views = {
+      start: document.getElementById('view-start'),
+      studentHome: document.getElementById('view-student-home'),
+      practiceForm: document.getElementById('view-practice-form'),
+      complete: document.getElementById('view-complete'),
+      studentGrowth: document.getElementById('view-student-growth'),
+      teacherDashboard: document.getElementById('view-teacher-dashboard'),
+      teacherManage: document.getElementById('view-teacher-manage')
+    };
+
+    // 헤더 엘리먼트
+    this.headerLogoBtn = document.getElementById('headerLogoBtn');
+    this.currentUserBadge = document.getElementById('currentUserBadge');
+    this.badgeRoleText = document.getElementById('badgeRoleText');
+    this.badgeNameText = document.getElementById('badgeNameText');
+    this.logoutBtn = document.getElementById('logoutBtn');
+
+    // 시작 화면
+    this.selectClass = document.getElementById('selectClass');
+    this.selectStudentNumber = document.getElementById('selectStudentNumber');
+    this.studentPreviewBox = document.getElementById('studentPreviewBox');
+    this.studentPreviewName = document.getElementById('studentPreviewName');
+    this.studentPinGroup = document.getElementById('studentPinGroup');
+    this.studentPinInput = document.getElementById('studentPinInput');
+    this.rememberTabletGroup = document.getElementById('rememberTabletGroup');
+    this.rememberTabletCheck = document.getElementById('rememberTabletCheck');
+    this.btnStudentStart = document.getElementById('btnStudentStart');
+    this.studentLoginForm = document.getElementById('studentLoginForm');
+    this.teacherLoginForm = document.getElementById('teacherLoginForm');
+    this.teacherPinInput = document.getElementById('teacherPinInput');
+
+    // 학생 홈 화면
+    this.homeClassNumberChip = document.getElementById('homeClassNumberChip');
+    this.homeStudentName = document.getElementById('homeStudentName');
+    this.statWeeklyDays = document.getElementById('statWeeklyDays');
+    this.statTotalSongs = document.getElementById('statTotalSongs');
+    this.statTotalCount = document.getElementById('statTotalCount');
+    this.challengeStageBadge = document.getElementById('challengeStageBadge');
+    this.challengeSongTitle = document.getElementById('challengeSongTitle');
+    this.challengeTip = document.getElementById('challengeTip');
+    this.btnGoPractice = document.getElementById('btnGoPractice');
+    this.btnGoGrowth = document.getElementById('btnGoGrowth');
+    this.homeRecentRecordsList = document.getElementById('homeRecentRecordsList');
+
+    // 연습 기록 화면
+    this.btnPracticeBack = document.getElementById('btnPracticeBack');
+    this.practiceRecordForm = document.getElementById('practiceRecordForm');
+    this.practiceSongSelect = document.getElementById('practiceSongSelect');
+    this.selectedSongStageBox = document.getElementById('selectedSongStageBox');
+    this.selectedSongStageText = document.getElementById('selectedSongStageText');
+    this.practiceCountDisplay = document.getElementById('practiceCountDisplay');
+    this.btnCountAddMain = document.getElementById('btnCountAddMain');
+    this.btnCountCancelLast = document.getElementById('btnCountCancelLast');
+    this.btnCountMinus = document.getElementById('btnCountMinus');
+    this.btnCountPlus = document.getElementById('btnCountPlus');
+    this.practiceCommentInput = document.getElementById('practiceCommentInput');
+    this.commentCharCount = document.getElementById('commentCharCount');
+    this.btnSavePractice = document.getElementById('btnSavePractice');
+
+    // 완료 화면
+    this.compSongTitle = document.getElementById('compSongTitle');
+    this.compCount = document.getElementById('compCount');
+    this.compFocus = document.getElementById('compFocus');
+    this.compEval = document.getElementById('compEval');
+    this.btnCompGoGrowth = document.getElementById('btnCompGoGrowth');
+    this.btnCompGoHome = document.getElementById('btnCompGoHome');
+
+    // 성장 화면
+    this.btnGrowthBack = document.getElementById('btnGrowthBack');
+    this.gStatDays = document.getElementById('gStatDays');
+    this.gStatCounts = document.getElementById('gStatCounts');
+    this.gStatSongs = document.getElementById('gStatSongs');
+    this.teacherFeedbackBanner = document.getElementById('teacherFeedbackBanner');
+    this.teacherFeedbackText = document.getElementById('teacherFeedbackText');
+    this.teacherFeedbackDate = document.getElementById('teacherFeedbackDate');
+    this.btnConfirmFeedback = document.getElementById('btnConfirmFeedback');
+    this.weeklyChartContainer = document.getElementById('weeklyChartContainer');
+    this.growthSongStagesList = document.getElementById('growthSongStagesList');
+    this.growthSongFilter = document.getElementById('growthSongFilter');
+    this.growthRecordsTimeline = document.getElementById('growthRecordsTimeline');
+
+    // 교사 대시보드
+    this.btnGoTeacherManage = document.getElementById('btnGoTeacherManage');
+    this.btnTeacherExit = document.getElementById('btnTeacherExit');
+    this.tStatTotalStudents = document.getElementById('tStatTotalStudents');
+    this.tStatActiveStudents = document.getElementById('tStatActiveStudents');
+    this.tStatParticipationRate = document.getElementById('tStatParticipationRate');
+    this.tStatTopSong = document.getElementById('tStatTopSong');
+    this.tStatDifficultFocus = document.getElementById('tStatDifficultFocus');
+    this.teacherStudentSearch = document.getElementById('teacherStudentSearch');
+    this.teacherStudentTableBody = document.getElementById('teacherStudentTableBody');
+
+    // 교사 관리 화면
+    this.btnBackToDashboard = document.getElementById('btnBackToDashboard');
+    this.manageTabs = document.querySelectorAll('.manage-tabs .tab-btn');
+    this.tabPanes = document.querySelectorAll('.tab-pane');
+    this.sheetStatusIndicator = document.getElementById('sheetStatusIndicator');
+    this.sheetStatusText = document.getElementById('sheetStatusText');
+    this.appsScriptUrlInput = document.getElementById('appsScriptUrlInput');
+    this.sheetConfigForm = document.getElementById('sheetConfigForm');
+    this.btnManualSync = document.getElementById('btnManualSync');
+    this.manageSongTableBody = document.getElementById('manageSongTableBody');
+    this.btnOpenAddSongModal = document.getElementById('btnOpenAddSongModal');
+    this.manageStudentTableBody = document.getElementById('manageStudentTableBody');
+    this.btnOpenAddStudentModal = document.getElementById('btnOpenAddStudentModal');
+    this.manageRecordsTableBody = document.getElementById('manageRecordsTableBody');
+
+    // 모달창들
+    this.studentDetailModal = document.getElementById('studentDetailModal');
+    this.btnCloseModal = document.getElementById('btnCloseModal');
+    this.modalStudentTitle = document.getElementById('modalStudentTitle');
+    this.modalStudentDays = document.getElementById('modalStudentDays');
+    this.modalStudentCounts = document.getElementById('modalStudentCounts');
+    this.modalStudentSongs = document.getElementById('modalStudentSongs');
+    this.modalFeedbackInput = document.getElementById('modalFeedbackInput');
+    this.btnSaveFeedback = document.getElementById('btnSaveFeedback');
+    this.modalRecordsList = document.getElementById('modalRecordsList');
+
+    this.addSongModal = document.getElementById('addSongModal');
+    this.btnCloseSongModal = document.getElementById('btnCloseSongModal');
+    this.addSongForm = document.getElementById('addSongForm');
+    this.newSongTitle = document.getElementById('newSongTitle');
+    this.newSongStage = document.getElementById('newSongStage');
+
+    this.addStudentModal = document.getElementById('addStudentModal');
+    this.btnCloseStudentModal = document.getElementById('btnCloseStudentModal');
+    this.addStudentForm = document.getElementById('addStudentForm');
+    this.newStudentClass = document.getElementById('newStudentClass');
+    this.newStudentNum = document.getElementById('newStudentNum');
+    this.newStudentName = document.getElementById('newStudentName');
+    this.newStudentPin = document.getElementById('newStudentPin');
+
+    // 토스트
+    this.toastContainer = document.getElementById('toastContainer');
+  }
+
+  // 이벤트 바인딩
+  bindEvents() {
+    // 헤더 로고 클릭 시 홈 또는 시작화면
+    this.headerLogoBtn.addEventListener('click', () => {
+      if (this.currentStudent) {
+        this.showView('studentHome');
+      } else if (this.isTeacher) {
+        this.showView('teacherDashboard');
+      } else {
+        this.showView('start');
+      }
+    });
+
+    // 로그아웃 버튼
+    this.logoutBtn.addEventListener('click', () => this.handleLogout());
+
+    // 학급 선택 드롭다운 변경
+    this.selectClass.addEventListener('change', () => this.handleClassChange());
+
+    // 번호 선택 변경
+    this.selectStudentNumber.addEventListener('change', () => this.handleNumberChange());
+
+    // 학생 로그인 폼 제출
+    this.studentLoginForm.addEventListener('submit', (e) => this.handleStudentLogin(e));
+
+    // 교사 로그인 폼 제출
+    this.teacherLoginForm.addEventListener('submit', (e) => this.handleTeacherLogin(e));
+
+    // 학생 홈 액션 버튼
+    this.btnGoPractice.addEventListener('click', () => this.openPracticeForm());
+    this.btnGoGrowth.addEventListener('click', () => this.openGrowthView());
+
+    // 연습 기록 화면 제어
+    this.btnPracticeBack.addEventListener('click', () => this.showView('studentHome'));
+    this.practiceSongSelect.addEventListener('change', () => this.handlePracticeSongChange());
+
+    // 카운터 버튼들
+    this.btnCountAddMain.addEventListener('click', () => this.adjustPracticeCount(1));
+    this.btnCountCancelLast.addEventListener('click', () => this.adjustPracticeCount(-1));
+    this.btnCountPlus.addEventListener('click', () => this.adjustPracticeCount(1));
+    this.btnCountMinus.addEventListener('click', () => this.adjustPracticeCount(-1));
+
+    // 연습 소감 글자수 세기
+    this.practiceCommentInput.addEventListener('input', () => {
+      this.commentCharCount.textContent = this.practiceCommentInput.value.length;
+    });
+
+    // 연습 기록 저장
+    this.practiceRecordForm.addEventListener('submit', (e) => this.handleSavePractice(e));
+
+    // 완료 화면 버튼
+    this.btnCompGoGrowth.addEventListener('click', () => this.openGrowthView());
+    this.btnCompGoHome.addEventListener('click', () => this.showView('studentHome'));
+
+    // 성장 화면 제어
+    this.btnGrowthBack.addEventListener('click', () => this.showView('studentHome'));
+    this.btnConfirmFeedback.addEventListener('click', () => this.handleConfirmFeedback());
+    this.growthSongFilter.addEventListener('change', () => this.renderGrowthTimeline());
+
+    // 교사 대시보드 제어
+    this.btnGoTeacherManage.addEventListener('click', () => this.openTeacherManage());
+    this.btnTeacherExit.addEventListener('click', () => this.handleLogout());
+    this.teacherStudentSearch.addEventListener('input', () => this.renderTeacherStudentTable());
+
+    // 교사 관리 화면 제어
+    this.btnBackToDashboard.addEventListener('click', () => this.showView('teacherDashboard'));
+    this.manageTabs.forEach(btn => {
+      btn.addEventListener('click', () => this.switchManageTab(btn.dataset.tab));
+    });
+
+    // 시트 연동 설정 폼
+    this.sheetConfigForm.addEventListener('submit', (e) => this.handleSaveSheetUrl(e));
+    this.btnManualSync.addEventListener('click', () => this.syncAllDataWithSheet());
+
+    // 모달 제어
+    this.btnCloseModal.addEventListener('click', () => this.closeStudentModal());
+    this.studentDetailModal.addEventListener('click', (e) => {
+      if (e.target === this.studentDetailModal) this.closeStudentModal();
+    });
+    this.btnSaveFeedback.addEventListener('click', () => this.handleSaveTeacherFeedback());
+
+    // 연습곡 추가 모달
+    this.btnOpenAddSongModal.addEventListener('click', () => {
+      this.addSongForm.reset();
+      this.addSongModal.style.display = 'flex';
+    });
+    this.btnCloseSongModal.addEventListener('click', () => {
+      this.addSongModal.style.display = 'none';
+    });
+    this.addSongForm.addEventListener('submit', (e) => this.handleAddSong(e));
+
+    // 학생 추가 모달
+    this.btnOpenAddStudentModal.addEventListener('click', () => {
+      this.addStudentForm.reset();
+      this.newStudentPin.value = '0000';
+      this.addStudentModal.style.display = 'flex';
+    });
+    this.btnCloseStudentModal.addEventListener('click', () => {
+      this.addStudentModal.style.display = 'none';
+    });
+    this.addStudentForm.addEventListener('submit', (e) => this.handleAddStudent(e));
+  }
+
+  // 앱 시작 초기화
+  initApp() {
+    this.populateClassDropdown();
+    this.updateSheetStatusBadge();
+
+    // 개인 태블릿에 저장된 학생 ID 확인 (자동 입장)
+    const rememberedId = localStorage.getItem('recorder_remembered_student_id');
+    if (rememberedId && !this.appsScriptUrl) {
+      const student = this.students.find(s => s.id === rememberedId);
+      if (student) {
+        this.loginAsStudent(student, false);
+        this.showToast(`반가워요, ${student.name} 학생! 태블릿 정보를 확인했어요.`, 'success');
+        return;
+      }
+    }
+
+    this.showView('start');
+  }
+
+  // JSONP is needed because Apps Script ContentService does not expose CORS headers.
+  // Never expose all student records through an unauthenticated public endpoint.
+  fetchSheetRecords(studentId, pin, teacher = false) {
+    return new Promise((resolve, reject) => {
+      if (!this.appsScriptUrl) { resolve([]); return; }
+      const callback = 'recorderCallback_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+      const script = document.createElement('script');
+      const timeout = setTimeout(() => finish(new Error('시트 응답 시간 초과')), 12000);
+      const finish = (error, data) => {
+        clearTimeout(timeout);
+        delete window[callback];
+        script.remove();
+        error ? reject(error) : resolve(data);
+      };
+      window[callback] = (response) => {
+        if (!response || response.status !== 'success') finish(new Error(response?.message || '시트 조회 실패'));
+        else finish(null, response.records || []);
+      };
+      const params = new URLSearchParams({action:'getRecords', callback, pin:String(pin || '')});
+      if (!teacher) params.set('studentId', studentId);
+      else params.set('teacher', '1');
+      script.onerror = () => finish(new Error('시트 스크립트 로딩 실패'));
+      script.src = this.appsScriptUrl + '?' + params.toString();
+      document.head.appendChild(script);
+    });
+  }
+
+  async refreshSheetRecords(studentId, pin, teacher = false) {
+    if (!this.appsScriptUrl) return;
+    try {
+      const incoming = await this.fetchSheetRecords(studentId, pin, teacher);
+      const merged = new Map(this.records.map(r => [String(r.id), r]));
+      incoming.forEach(r => merged.set(String(r.id), r));
+      this.records = [...merged.values()];
+      this.saveStorage('recorder_records', this.records);
+      if (this.currentStudent) this.renderStudentHome();
+      if (this.isTeacher) this.renderTeacherDashboard();
+      if (this.views.studentGrowth.classList.contains('active')) this.openGrowthView();
+    } catch (error) {
+      console.warn('시트 기록 조회 실패:', error);
+      this.showToast('시트 기록 불러오기 실패: ' + error.message, 'error');
+    }
+  }
+
+  // 뷰 전환
+  showView(viewName) {
+    Object.keys(this.views).forEach(key => {
+      if (this.views[key]) {
+        this.views[key].classList.toggle('active', key === viewName);
+      }
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ==========================================
+  // 3. 학생 인증 및 로그인 처리
+  // ==========================================
+  populateClassDropdown() {
+    const classes = [...new Set(this.students.map(s => s.className))].sort();
+    this.selectClass.innerHTML = '<option value="">학급을 고르세요</option>';
+    classes.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      this.selectClass.appendChild(opt);
+    });
+  }
+
+  handleClassChange() {
+    const selectedClass = this.selectClass.value;
+    this.selectStudentNumber.innerHTML = '<option value="">번호를 고르세요</option>';
+    this.studentPreviewBox.style.display = 'none';
+    this.studentPinGroup.style.display = 'none';
+    this.rememberTabletGroup.style.display = 'none';
+    this.btnStudentStart.disabled = true;
+
+    if (!selectedClass) {
+      this.selectStudentNumber.disabled = true;
+      return;
+    }
+
+    const studentsInClass = this.students
+      .filter(s => s.className === selectedClass)
+      .sort((a, b) => a.number - b.number);
+
+    studentsInClass.forEach(s => {
+      const opt = document.createElement('option');
+      opt.value = s.id;
+      opt.textContent = `${s.number}번`;
+      this.selectStudentNumber.appendChild(opt);
+    });
+
+    this.selectStudentNumber.disabled = false;
+  }
+
+  handleNumberChange() {
+    const studentId = this.selectStudentNumber.value;
+    if (!studentId) {
+      this.studentPreviewBox.style.display = 'none';
+      this.studentPinGroup.style.display = 'none';
+      this.rememberTabletGroup.style.display = 'none';
+      this.btnStudentStart.disabled = true;
+      return;
+    }
+
+    const student = this.students.find(s => s.id === studentId);
+    if (student) {
+      this.studentPreviewName.textContent = student.name;
+      this.studentPreviewBox.style.display = 'flex';
+      this.studentPinGroup.style.display = 'block';
+      this.rememberTabletGroup.style.display = 'flex';
+      this.studentPinInput.value = '';
+      this.btnStudentStart.disabled = false;
+    }
+  }
+
+  handleStudentLogin(e) {
+    e.preventDefault();
+    const studentId = this.selectStudentNumber.value;
+    if (!studentId) {
+      this.showToast('학급과 번호를 선택해주세요.', 'error');
+      return;
+    }
+
+    const student = this.students.find(s => s.id === studentId);
+    if (!student) {
+      this.showToast('학생 정보를 찾을 수 없습니다.', 'error');
+      return;
+    }
+
+    // 4자리 확인 핀번호 검증
+    const enteredPin = this.studentPinInput.value.trim();
+    const expectedPin = String(student.pin || '');
+
+    if (!enteredPin || enteredPin === '0000' || expectedPin === '0000' || enteredPin !== expectedPin) {
+      this.showToast('학생 확인번호가 올바르지 않습니다. 선생님께 개인 확인번호를 문의하세요.', 'error');
+      this.studentPinInput.focus();
+      return;
+    }
+
+    // 개인 태블릿 기억하기 체크 여부
+    if (this.rememberTabletCheck.checked) {
+      localStorage.setItem('recorder_remembered_student_id', student.id);
+    } else {
+      localStorage.removeItem('recorder_remembered_student_id');
+    }
+
+    this.loginAsStudent(student, true);
+  }
+
+  loginAsStudent(student, showWelcomeToast = true) {
+    this.currentStudent = student;
+    this.isTeacher = false;
+
+    // 헤더 상태 갱신
+    this.currentUserBadge.style.display = 'flex';
+    this.badgeRoleText.textContent = '학생';
+    this.badgeNameText.textContent = student.name;
+    this.logoutBtn.style.display = 'inline-flex';
+
+    this.renderStudentHome();
+    this.showView('studentHome');
+    this.refreshSheetRecords(student.id, student.pin);
+
+    if (showWelcomeToast) {
+      this.showToast(`환영해요, ${student.name} 학생! 🎵`, 'success');
+    }
+  }
+
+  handleTeacherLogin(e) {
+    e.preventDefault();
+    const enteredPin = this.teacherPinInput.value.trim();
+    if (enteredPin === this.teacherPin) {
+      this.currentStudent = null;
+      this.isTeacher = true;
+
+      this.currentUserBadge.style.display = 'flex';
+      this.badgeRoleText.textContent = '선생님';
+      this.badgeNameText.textContent = '담임교사';
+      this.logoutBtn.style.display = 'inline-flex';
+
+      this.teacherPinInput.value = '';
+      this.renderTeacherDashboard();
+      this.showView('teacherDashboard');
+      this.refreshSheetRecords('', enteredPin, true);
+      this.showToast('선생님 모드로 접속하였습니다.', 'success');
+    } else {
+      this.showToast('선생님 비밀번호가 일치하지 않습니다. (기본: 1234)', 'error');
+    }
+  }
+
+  handleLogout() {
+    this.currentStudent = null;
+    this.isTeacher = false;
+    this.currentUserBadge.style.display = 'none';
+    this.logoutBtn.style.display = 'none';
+    localStorage.removeItem('recorder_remembered_student_id');
+
+    // 폼 초기화
+    this.studentLoginForm.reset();
+    this.handleClassChange();
+    this.showView('start');
+    this.showToast('로그아웃되었습니다.', 'success');
+  }
+
+  // ==========================================
+  // 4. 학생 홈 및 통계 렌더링
+  // ==========================================
+  renderStudentHome() {
+    if (!this.currentStudent) return;
+
+    this.homeClassNumberChip.textContent = `${this.currentStudent.className} ${this.currentStudent.number}번`;
+    this.homeStudentName.textContent = this.currentStudent.name;
+
+    // 해당 학생의 모든 기록 필터링
+    const myRecords = this.records
+      .filter(r => r.studentId === this.currentStudent.id)
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+    // 1) 이번 주 연습 일수 (중복 날짜 제거 계산)
+    const weeklyDays = this.calculateWeeklyDays(myRecords);
+    this.statWeeklyDays.textContent = weeklyDays;
+
+    // 2) 연습한 고유 곡 수
+    const uniqueSongs = new Set(myRecords.map(r => r.songTitle));
+    this.statTotalSongs.textContent = uniqueSongs.size;
+
+    // 3) 총 연습 횟수
+    const totalCount = myRecords.reduce((sum, r) => sum + (Number(r.count) || 0), 0);
+    this.statTotalCount.textContent = totalCount;
+
+    // 4) 현재 도전 곡 선정 (가장 최근 기록 곡 또는 기본 곡)
+    if (myRecords.length > 0) {
+      const latest = myRecords[0];
+      const songInfo = this.songs.find(s => s.title === latest.songTitle) || { stage: '부분 연습' };
+      this.challengeSongTitle.textContent = latest.songTitle;
+      this.challengeStageBadge.textContent = songInfo.stage;
+      this.challengeTip.textContent = `${latest.focusArea}에 신경 쓰며 즐겁게 한 걸음씩 완성해봐요!`;
+    } else {
+      const firstSong = this.songs[0] || { title: '비행기', stage: '악보와 운지 익히기' };
+      this.challengeSongTitle.textContent = firstSong.title;
+      this.challengeStageBadge.textContent = firstSong.stage;
+      this.challengeTip.textContent = '호흡을 고르게 하고 시-라-솔 손가락 구멍을 꼼꼼히 막아보세요!';
+    }
+
+    // 5) 최근 연습 기록 3개 렌더링
+    this.homeRecentRecordsList.innerHTML = '';
+    const recent3 = myRecords.slice(0, 3);
+    if (recent3.length === 0) {
+      const emptyDiv = document.createElement('div');
+      emptyDiv.className = 'empty-state-text';
+      emptyDiv.textContent = '아직 기록이 없어요. 첫 번째 리코더 연습을 기록해보세요! 🎶';
+      this.homeRecentRecordsList.appendChild(emptyDiv);
+    } else {
+      recent3.forEach(rec => {
+        const item = document.createElement('div');
+        item.className = 'record-item-card';
+
+        let emoji = '🙂';
+        if (rec.selfEval === '잘했어요') emoji = '😄';
+        if (rec.selfEval === '연습이 더 필요해요') emoji = '😐';
+
+        item.innerHTML = `
+          <div class="record-main-info">
+            <span class="record-emoji">${emoji}</span>
+            <div class="record-titles">
+              <strong>${this.escapeHtml(rec.songTitle)}</strong>
+              <span class="record-meta">${rec.createdAt.slice(5, 16)} · 집중: ${this.escapeHtml(rec.focusArea)}</span>
+            </div>
+          </div>
+          <span class="record-badge-count">${rec.count}회</span>
+        `;
+        this.homeRecentRecordsList.appendChild(item);
+      });
+    }
+  }
+
+  // 이번 주 고유 연습 일수 계산
+  calculateWeeklyDays(recordsList) {
+    const now = new Date();
+    const dayOfWeek = now.getDay(); // 0(일) ~ 6(토)
+    // 월요일 기준으로 이번 주 시작일 구하기
+    const distanceToMonday = (dayOfWeek + 6) % 7;
+    const monday = new Date(now);
+    monday.setDate(now.getDate() - distanceToMonday);
+    monday.setHours(0, 0, 0, 0);
+
+    const thisWeekDates = new Set();
+    recordsList.forEach(r => {
+      const recDate = new Date(r.createdAt.replace(' ', 'T'));
+      if (recDate >= monday && recDate <= now) {
+        thisWeekDates.add(r.dateOnly || r.createdAt.slice(0, 10));
+      }
+    });
+    return thisWeekDates.size;
+  }
+
+  // ==========================================
+  // 5. 오늘의 연습 기록 작성 로직
+  // ==========================================
+  openPracticeForm() {
+    if (!this.currentStudent) return;
+
+    // 연습곡 셀렉트 팝업 채우기
+    this.practiceSongSelect.innerHTML = '<option value="">연습한 곡을 선택하세요</option>';
+    this.songs.forEach(s => {
+      const opt = document.createElement('option');
+      opt.value = s.title;
+      opt.textContent = `${s.title} (${s.stage})`;
+      opt.dataset.stage = s.stage;
+      this.practiceSongSelect.appendChild(opt);
+    });
+
+    // 폼 초기화
+    this.practiceRecordForm.reset();
+    this.selectedSongStageBox.style.display = 'none';
+    this.practiceCount = 1;
+    this.practiceCountDisplay.textContent = '1';
+    this.commentCharCount.textContent = '0';
+    this.btnSavePractice.disabled = false;
+
+    // 만약 학생의 이전 연습 곡이 있다면 기본 선택
+    const myRecords = this.records.filter(r => r.studentId === this.currentStudent.id);
+    if (myRecords.length > 0) {
+      const lastSong = myRecords[myRecords.length - 1].songTitle;
+      this.practiceSongSelect.value = lastSong;
+      this.handlePracticeSongChange();
+    }
+
+    this.showView('practiceForm');
+  }
+
+  handlePracticeSongChange() {
+    const selectedTitle = this.practiceSongSelect.value;
+    if (!selectedTitle) {
+      this.selectedSongStageBox.style.display = 'none';
+      return;
+    }
+    const song = this.songs.find(s => s.title === selectedTitle);
+    if (song) {
+      this.selectedSongStageText.textContent = song.stage;
+      this.selectedSongStageBox.style.display = 'flex';
+    }
+  }
+
+  adjustPracticeCount(delta) {
+    const nextVal = this.practiceCount + delta;
+    if (nextVal < 0) return; // 0회 미만 음수 방지
+    this.practiceCount = nextVal;
+    this.practiceCountDisplay.textContent = String(this.practiceCount);
+
+    // 가벼운 애니메이션
+    this.practiceCountDisplay.style.transform = 'scale(1.2)';
+    setTimeout(() => {
+      this.practiceCountDisplay.style.transform = 'scale(1)';
+    }, 150);
+  }
+
+  async handleSavePractice(e) {
+    e.preventDefault();
+
+    // 1. 필수 입력 검증
+    const songTitle = this.practiceSongSelect.value;
+    if (!songTitle) {
+      this.showToast('연습한 곡을 선택해주세요!', 'error');
+      this.practiceSongSelect.focus();
+      return;
+    }
+
+    const focusAreaChecked = document.querySelector('input[name="focusArea"]:checked');
+    if (!focusAreaChecked) {
+      this.showToast('오늘 집중해서 연습한 부분을 선택해주세요!', 'error');
+      return;
+    }
+
+    if (this.practiceCount <= 0) {
+      this.showToast('연습 횟수는 최소 1회 이상이어야 합니다.', 'error');
+      return;
+    }
+
+    const selfEvalChecked = document.querySelector('input[name="selfEval"]:checked');
+    if (!selfEvalChecked) {
+      this.showToast('오늘의 자기평가를 선택해주세요!', 'error');
+      return;
+    }
+
+    const comment = this.practiceCommentInput.value.trim();
+    const now = new Date();
+    const dateOnly = now.toISOString().split('T')[0];
+    const timeOnly = now.toTimeString().slice(0, 5);
+    const createdAt = `${dateOnly} ${timeOnly}`;
+    const recordId = 'rec-' + Date.now();
+
+    const newRecord = {
+      id: recordId,
+      createdAt: createdAt,
+      dateOnly: dateOnly,
+      studentId: this.currentStudent.id,
+      songTitle: songTitle,
+      focusArea: focusAreaChecked.value,
+      count: Number(this.practiceCount),
+      selfEval: selfEvalChecked.value,
+      comment: comment,
+      teacherFeedback: '',
+      feedbackConfirmed: false
+    };
+
+    // 2. 중복 저장 방지: 버튼 비활성화
+    this.btnSavePractice.disabled = true;
+    this.btnSavePractice.textContent = '기록 저장 중... 🎶';
+
+    // 3. 로컬 저장소에 우선 확실히 보관
+    this.records.unshift(newRecord);
+    this.saveStorage('recorder_records', this.records);
+    this.lastSavedRecord = newRecord;
+
+    // 4. 구글 스프레드시트 연동이 설정되어 있다면 비동기 전송
+    if (this.appsScriptUrl) {
+      const sent = await this.sendRecordToSheet(newRecord);
+      if (!sent) this.showToast('시트 전송 실패: 이 기기에 기록을 보관했습니다. 나중에 다시 동기화하세요.', 'error');
+    } else {
+      this.showToast('구글 시트 미연결: 이 기기에만 저장되었습니다.', 'info');
+    }
+
+    // 5. 완료 화면으로 이동
+    setTimeout(() => {
+      this.renderCompleteView(newRecord);
+      this.showView('complete');
+      this.showToast('연습 기록이 이 기기에 저장되었어요! 🎉', 'success');
+    }, 400);
+  }
+
+  // 완료 화면 렌더링
+  renderCompleteView(record) {
+    this.compSongTitle.textContent = record.songTitle;
+    this.compCount.textContent = `${record.count}회`;
+    this.compFocus.textContent = record.focusArea;
+
+    let evalEmoji = '🙂';
+    if (record.selfEval === '잘했어요') evalEmoji = '😄';
+    if (record.selfEval === '연습이 더 필요해요') evalEmoji = '😐';
+    this.compEval.textContent = `${evalEmoji} ${record.selfEval}`;
+  }
+
+  // ==========================================
+  // 6. 나의 성장 기록 화면
+  // ==========================================
+  openGrowthView() {
+    if (!this.currentStudent) return;
+    this.renderStudentGrowth();
+    this.showView('studentGrowth');
+  }
+
+  renderStudentGrowth() {
+    const myRecords = this.records
+      .filter(r => r.studentId === this.currentStudent.id)
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+    // 누적 일수 (중복 날짜 제거 계산)
+    const uniqueDates = new Set(myRecords.map(r => r.dateOnly || r.createdAt.slice(0, 10)));
+    this.gStatDays.textContent = uniqueDates.size;
+
+    // 누적 횟수
+    const totalCounts = myRecords.reduce((sum, r) => sum + (Number(r.count) || 0), 0);
+    this.gStatCounts.textContent = totalCounts;
+
+    // 도전한 곡 수
+    const uniqueSongs = new Set(myRecords.map(r => r.songTitle));
+    this.gStatSongs.textContent = uniqueSongs.size;
+
+    // 선생님 피드백 확인
+    const recordWithFeedback = myRecords.find(r => r.teacherFeedback && r.teacherFeedback.trim() !== '');
+    if (recordWithFeedback) {
+      this.teacherFeedbackBanner.style.display = 'block';
+      this.teacherFeedbackText.textContent = `"${recordWithFeedback.teacherFeedback}"`;
+      this.teacherFeedbackDate.textContent = `(${recordWithFeedback.songTitle} 연습에 남겨주신 말씀)`;
+      
+      if (recordWithFeedback.feedbackConfirmed) {
+        this.btnConfirmFeedback.textContent = '확인 완료 👍';
+        this.btnConfirmFeedback.disabled = true;
+      } else {
+        this.btnConfirmFeedback.textContent = '선생님 말씀 확인했어요 👍';
+        this.btnConfirmFeedback.disabled = false;
+        this.btnConfirmFeedback.dataset.recordId = recordWithFeedback.id;
+      }
+    } else {
+      this.teacherFeedbackBanner.style.display = 'none';
+    }
+
+    // 주간 7일 막대그래프 렌더링
+    this.renderWeeklyChart(myRecords);
+
+    // 곡별 연습 단계 렌더링
+    this.renderSongStagesProgress(myRecords);
+
+    // 필터 드롭다운 갱신
+    this.growthSongFilter.innerHTML = '<option value="ALL">모든 곡 보기</option>';
+    this.songs.forEach(s => {
+      const opt = document.createElement('option');
+      opt.value = s.title;
+      opt.textContent = s.title;
+      this.growthSongFilter.appendChild(opt);
+    });
+
+    // 타임라인 렌더링
+    this.renderGrowthTimeline();
+  }
+
+  handleConfirmFeedback() {
+    const recordId = this.btnConfirmFeedback.dataset.recordId;
+    if (!recordId) return;
+
+    const record = this.records.find(r => r.id === recordId);
+    if (record) {
+      record.feedbackConfirmed = true;
+      this.saveStorage('recorder_records', this.records);
+      this.btnConfirmFeedback.textContent = '확인 완료 👍';
+      this.btnConfirmFeedback.disabled = true;
+      this.showToast('선생님께 확인 소식을 보냈어요! ❤️', 'success');
+
+      if (this.appsScriptUrl) {
+        this.sendActionToSheet('confirmFeedback', { recordId });
+      }
+    }
+  }
+
+  renderWeeklyChart(myRecords) {
+    this.weeklyChartContainer.innerHTML = '';
+    const days = [];
+    const countsPerDay = {};
+
+    // 최근 7일 날짜 생성
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const str = d.toISOString().split('T')[0];
+      days.push(str);
+      countsPerDay[str] = 0;
+    }
+
+    myRecords.forEach(r => {
+      const d = r.dateOnly || r.createdAt.slice(0, 10);
+      if (countsPerDay[d] !== undefined) {
+        countsPerDay[d] += Number(r.count) || 0;
+      }
+    });
+
+    const maxCount = Math.max(...Object.values(countsPerDay), 5); // 최소 기준 5
+
+    days.forEach(dayStr => {
+      const count = countsPerDay[dayStr];
+      const heightPercent = Math.min(100, Math.round((count / maxCount) * 100));
+
+      const col = document.createElement('div');
+      col.className = 'chart-bar-col';
+
+      const shortLabel = dayStr.slice(5).replace('-', '/');
+
+      col.innerHTML = `
+        <div class="chart-bar-wrapper">
+          <div class="chart-bar" style="height: ${Math.max(count > 0 ? heightPercent : 4, 4)}%;">
+            ${count > 0 ? `<span class="chart-val">${count}</span>` : ''}
+          </div>
+        </div>
+        <span class="chart-date-label">${shortLabel}</span>
+      `;
+      this.weeklyChartContainer.appendChild(col);
+    });
+  }
+
+  renderSongStagesProgress(myRecords) {
+    this.growthSongStagesList.innerHTML = '';
+    const stageNames = ['1. 악보와 운지', '2. 부분 연습', '3. 전체 연주', '4. 표현하기'];
+
+    this.songs.forEach(song => {
+      const songRecords = myRecords.filter(r => r.songTitle === song.title);
+      const songTotalCount = songRecords.reduce((sum, r) => sum + (Number(r.count) || 0), 0);
+
+      // 단계 계산 (연습 횟수에 따라 친절하게 진척도 표시)
+      let currentStageIdx = 0;
+      if (songTotalCount >= 10) currentStageIdx = 3;
+      else if (songTotalCount >= 5) currentStageIdx = 2;
+      else if (songTotalCount >= 2) currentStageIdx = 1;
+      else if (songTotalCount > 0) currentStageIdx = 0;
+
+      const item = document.createElement('div');
+      item.className = 'song-stage-item';
+
+      let pillsHtml = '';
+      for (let i = 0; i < 4; i++) {
+        let cls = 'stage-step-pill';
+        if (i < currentStageIdx) cls += ' completed';
+        else if (i === currentStageIdx && songTotalCount > 0) cls += ' active';
+        pillsHtml += `<div class="${cls}" title="${stageNames[i]}"></div>`;
+      }
+
+      item.innerHTML = `
+        <div class="song-stage-header">
+          <span class="song-stage-title">${this.escapeHtml(song.title)}</span>
+          <span class="song-stage-count">${songTotalCount}회 연습 (${stageNames[currentStageIdx]})</span>
+        </div>
+        <div class="stage-step-bar">
+          ${pillsHtml}
+        </div>
+      `;
+      this.growthSongStagesList.appendChild(item);
+    });
+  }
+
+  renderGrowthTimeline() {
+    this.growthRecordsTimeline.innerHTML = '';
+    const filter = this.growthSongFilter.value;
+    let list = this.records.filter(r => r.studentId === this.currentStudent.id);
+
+    if (filter !== 'ALL') {
+      list = list.filter(r => r.songTitle === filter);
+    }
+
+    list.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+    if (list.length === 0) {
+      const empty = document.createElement('div');
+      empty.className = 'empty-state-text';
+      empty.textContent = '해당 곡의 연습 일지가 아직 없습니다.';
+      this.growthRecordsTimeline.appendChild(empty);
+      return;
+    }
+
+    list.forEach(rec => {
+      const item = document.createElement('div');
+      item.className = 'timeline-item';
+
+      let evalEmoji = '🙂';
+      if (rec.selfEval === '잘했어요') evalEmoji = '😄';
+      if (rec.selfEval === '연습이 더 필요해요') evalEmoji = '😐';
+
+      item.innerHTML = `
+        <span class="timeline-date">${rec.createdAt}</span>
+        <div class="timeline-content-card">
+          <div class="t-card-row">
+            <strong>${this.escapeHtml(rec.songTitle)} (${rec.count}회)</strong>
+            <span>${evalEmoji} ${this.escapeHtml(rec.selfEval)}</span>
+          </div>
+          <div class="record-meta mt-2">집중 영역: ${this.escapeHtml(rec.focusArea)}</div>
+          ${rec.comment ? `<div class="t-card-comment">💭 ${this.escapeHtml(rec.comment)}</div>` : ''}
+          ${rec.teacherFeedback ? `<div class="t-card-comment" style="color:#6B46C1;font-weight:600;">👩‍🏫 선생님: ${this.escapeHtml(rec.teacherFeedback)}</div>` : ''}
+        </div>
+      `;
+      this.growthRecordsTimeline.appendChild(item);
+    });
+  }
+
+  // ==========================================
+  // 7. 교사 대시보드 및 관리 로직
+  // ==========================================
+  renderTeacherDashboard() {
+    // 1) 전체 학생 수
+    const totalStudents = this.students.length;
+    this.tStatTotalStudents.textContent = `${totalStudents}명`;
+
+    // 2) 이번 주 참여 학생 수
+    const now = new Date();
+    const dayOfWeek = now.getDay();
+    const distanceToMonday = (dayOfWeek + 6) % 7;
+    const monday = new Date(now);
+    monday.setDate(now.getDate() - distanceToMonday);
+    monday.setHours(0, 0, 0, 0);
+
+    const activeStudentIds = new Set();
+    this.records.forEach(r => {
+      const d = new Date(r.createdAt.replace(' ', 'T'));
+      if (d >= monday && d <= now) {
+        activeStudentIds.add(r.studentId);
+      }
+    });
+
+    const activeCount = activeStudentIds.size;
+    this.tStatActiveStudents.textContent = `${activeCount}명`;
+    const rate = totalStudents > 0 ? Math.round((activeCount / totalStudents) * 100) : 0;
+    this.tStatParticipationRate.textContent = `참여율 ${rate}%`;
+
+    // 3) 가장 많이 연습한 곡
+    const songCountMap = {};
+    const focusCountMap = {};
+
+    this.records.forEach(r => {
+      songCountMap[r.songTitle] = (songCountMap[r.songTitle] || 0) + (Number(r.count) || 0);
+      if (r.focusArea) {
+        focusCountMap[r.focusArea] = (focusCountMap[r.focusArea] || 0) + 1;
+      }
+    });
+
+    let topSong = '-';
+    let maxSongCount = 0;
+    Object.keys(songCountMap).forEach(s => {
+      if (songCountMap[s] > maxSongCount) {
+        maxSongCount = songCountMap[s];
+        topSong = s;
+      }
+    });
+    this.tStatTopSong.textContent = topSong !== '-' ? `${topSong} (${maxSongCount}회)` : '-';
+
+    // 4) 어려워하는 연습 요소 (자기평가가 '연습이 더 필요해요'인 항목 중 가장 많은 focusArea)
+    const difficultFocusMap = {};
+    this.records
+      .filter(r => r.selfEval === '연습이 더 필요해요')
+      .forEach(r => {
+        difficultFocusMap[r.focusArea] = (difficultFocusMap[r.focusArea] || 0) + 1;
+      });
+
+    let topDifficult = '-';
+    let maxDiffCount = 0;
+    Object.keys(difficultFocusMap).forEach(f => {
+      if (difficultFocusMap[f] > maxDiffCount) {
+        maxDiffCount = difficultFocusMap[f];
+        topDifficult = f;
+      }
+    });
+
+    // 만약 부족 평가가 없으면 가장 연습 비중이 많은 포커스 노출
+    if (topDifficult === '-') {
+      Object.keys(focusCountMap).forEach(f => {
+        if (focusCountMap[f] > maxDiffCount) {
+          maxDiffCount = focusCountMap[f];
+          topDifficult = f;
+        }
+      });
+    }
+    this.tStatDifficultFocus.textContent = topDifficult;
+
+    // 학생별 테이블 렌더링
+    this.renderTeacherStudentTable();
+  }
+
+  renderTeacherStudentTable() {
+    this.teacherStudentTableBody.innerHTML = '';
+    const query = this.teacherStudentSearch.value.trim().toLowerCase();
+
+    let list = this.students.filter(s => {
+      if (!query) return true;
+      return s.name.toLowerCase().includes(query) || s.className.toLowerCase().includes(query);
+    });
+
+    if (list.length === 0) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td colspan="9" class="text-center text-muted" style="padding:24px;">등록된 학생이 없거나 검색 결과가 없습니다.</td>`;
+      this.teacherStudentTableBody.appendChild(tr);
+      return;
+    }
+
+    list.forEach(student => {
+      const stdRecords = this.records.filter(r => r.studentId === student.id);
+      const uniqueDays = new Set(stdRecords.map(r => r.dateOnly || r.createdAt.slice(0, 10))).size;
+      const totalCount = stdRecords.reduce((sum, r) => sum + (Number(r.count) || 0), 0);
+
+      const latestRecord = stdRecords.length > 0 ? stdRecords[0] : null;
+      const latestSong = latestRecord ? latestRecord.songTitle : '-';
+      const latestEval = latestRecord ? latestRecord.selfEval : '-';
+      const hasFeedback = stdRecords.some(r => r.teacherFeedback && r.teacherFeedback.trim() !== '');
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${this.escapeHtml(student.className)}</td>
+        <td>${student.number}번</td>
+        <td><strong>${this.escapeHtml(student.name)}</strong></td>
+        <td>${uniqueDays}일</td>
+        <td>${totalCount}회</td>
+        <td>${this.escapeHtml(latestSong)}</td>
+        <td>${this.escapeHtml(latestEval)}</td>
+        <td>
+          <span class="badge ${hasFeedback ? 'badge-primary' : 'text-muted'}">
+            ${hasFeedback ? '작성됨' : '미작성'}
+          </span>
+        </td>
+        <td>
+          <button type="button" class="btn btn-xs btn-outline btn-view-std" data-id="${student.id}">
+            일지 보기 / 피드백
+          </button>
+        </td>
+      `;
+      this.teacherStudentTableBody.appendChild(tr);
+    });
+
+    // 학생 일지 상세 모달 열기 버튼 이벤트
+    this.teacherStudentTableBody.querySelectorAll('.btn-view-std').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const studentId = btn.dataset.id;
+        this.openStudentModal(studentId);
+      });
+    });
+  }
+
+  openStudentModal(studentId) {
+    const student = this.students.find(s => s.id === studentId);
+    if (!student) return;
+
+    this.selectedStudentForModal = student;
+    this.modalStudentTitle.textContent = `${student.className} ${student.number}번 ${student.name} 학생의 리코더 일지`;
+
+    const stdRecords = this.records.filter(r => r.studentId === student.id);
+    const uniqueDays = new Set(stdRecords.map(r => r.dateOnly || r.createdAt.slice(0, 10))).size;
+    const totalCount = stdRecords.reduce((sum, r) => sum + (Number(r.count) || 0), 0);
+    const uniqueSongs = new Set(stdRecords.map(r => r.songTitle)).size;
+
+    this.modalStudentDays.textContent = `${uniqueDays}일`;
+    this.modalStudentCounts.textContent = `${totalCount}회`;
+    this.modalStudentSongs.textContent = `${uniqueSongs}곡`;
+
+    // 최신 피드백 불러오기
+    const recordWithFeedback = stdRecords.find(r => r.teacherFeedback && r.teacherFeedback.trim() !== '');
+    this.modalFeedbackInput.value = recordWithFeedback ? recordWithFeedback.teacherFeedback : '';
+
+    // 학생 기록 목록 렌더링
+    this.modalRecordsList.innerHTML = '';
+    if (stdRecords.length === 0) {
+      this.modalRecordsList.innerHTML = '<div class="empty-state-text">아직 작성된 연습 기록이 없습니다.</div>';
+    } else {
+      stdRecords.forEach(rec => {
+        const item = document.createElement('div');
+        item.className = 'record-item-card';
+        item.innerHTML = `
+          <div>
+            <strong>${this.escapeHtml(rec.songTitle)} (${rec.count}회)</strong>
+            <div class="record-meta">${rec.createdAt} · 평가: ${this.escapeHtml(rec.selfEval)}</div>
+            ${rec.comment ? `<div class="record-meta mt-2">소감: "${this.escapeHtml(rec.comment)}"</div>` : ''}
+          </div>
+        `;
+        this.modalRecordsList.appendChild(item);
+      });
+    }
+
+    this.studentDetailModal.style.display = 'flex';
+  }
+
+  closeStudentModal() {
+    this.studentDetailModal.style.display = 'none';
+    this.selectedStudentForModal = null;
+  }
+
+  handleSaveTeacherFeedback() {
+    if (!this.selectedStudentForModal) return;
+
+    const feedbackText = this.modalFeedbackInput.value.trim();
+    const stdRecords = this.records.filter(r => r.studentId === this.selectedStudentForModal.id);
+
+    if (stdRecords.length === 0) {
+      this.showToast('연습 기록이 아직 없어 피드백을 연결할 수 없습니다.', 'error');
+      return;
+    }
+
+    // 가장 최신 연습 기록에 피드백 저장
+    const targetRecord = stdRecords[0];
+    targetRecord.teacherFeedback = feedbackText;
+    targetRecord.feedbackConfirmed = false;
+
+    this.saveStorage('recorder_records', this.records);
+    this.showToast(`${this.selectedStudentForModal.name} 학생에게 피드백을 저장했습니다!`, 'success');
+    this.renderTeacherStudentTable();
+
+    // 스프레드시트 비동기 동기화
+    if (this.appsScriptUrl) {
+      this.sendActionToSheet('saveFeedback', {
+        recordId: targetRecord.id,
+        feedback: feedbackText
+      });
+    }
+
+    this.closeStudentModal();
+  }
+
+  // ==========================================
+  // 8. 교사 관리 센터 (명단/곡/기록/시트설정)
+  // ==========================================
+  openTeacherManage() {
+    this.renderManageSongs();
+    this.renderManageStudents();
+    this.renderManageRecords();
+    this.appsScriptUrlInput.value = this.appsScriptUrl;
+    this.showView('teacherManage');
+  }
+
+  switchManageTab(targetTabId) {
+    this.manageTabs.forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.tab === targetTabId);
+    });
+    this.tabPanes.forEach(pane => {
+      pane.classList.toggle('active', pane.id === targetTabId);
+    });
+  }
+
+  // 연습곡 관리 렌더링
+  renderManageSongs() {
+    this.manageSongTableBody.innerHTML = '';
+    this.songs.forEach((s, idx) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${s.id}</td>
+        <td><strong>${this.escapeHtml(s.title)}</strong></td>
+        <td>${this.escapeHtml(s.stage)}</td>
+        <td>${idx + 1}</td>
+        <td>
+          <button type="button" class="btn btn-xs btn-outline text-accent btn-del-song" data-id="${s.id}">
+            삭제
+          </button>
+        </td>
+      `;
+      this.manageSongTableBody.appendChild(tr);
+    });
+
+    this.manageSongTableBody.querySelectorAll('.btn-del-song').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (confirm('이 연습곡을 목록에서 삭제하시겠습니까?')) {
+          this.songs = this.songs.filter(s => s.id !== btn.dataset.id);
+          this.saveStorage('recorder_songs', this.songs);
+          this.renderManageSongs();
+          this.showToast('연습곡이 삭제되었습니다.', 'success');
+        }
+      });
+    });
+  }
+
+  handleAddSong(e) {
+    e.preventDefault();
+    const title = this.newSongTitle.value.trim();
+    const stage = this.newSongStage.value;
+    if (!title) return;
+
+    const newSong = {
+      id: 'song-' + Date.now().toString().slice(-4),
+      title: title,
+      stage: stage,
+      order: this.songs.length + 1
+    };
+
+    this.songs.push(newSong);
+    this.saveStorage('recorder_songs', this.songs);
+    this.renderManageSongs();
+    this.addSongModal.style.display = 'none';
+    this.showToast(`'${title}' 곡이 추가되었습니다!`, 'success');
+
+    if (this.appsScriptUrl) {
+      this.sendActionToSheet('addSong', newSong);
+    }
+  }
+
+  // 학생 명단 관리 렌더링
+  renderManageStudents() {
+    this.manageStudentTableBody.innerHTML = '';
+    this.students.forEach(std => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${std.id}</td>
+        <td>${this.escapeHtml(std.className)}</td>
+        <td>${std.number}번</td>
+        <td><strong>${this.escapeHtml(std.name)}</strong></td>
+        <td>${std.pin || '0000'}</td>
+        <td>${std.createdAt || '-'}</td>
+        <td>
+          <button type="button" class="btn btn-xs btn-outline text-accent btn-del-std" data-id="${std.id}">
+            삭제
+          </button>
+        </td>
+      `;
+      this.manageStudentTableBody.appendChild(tr);
+    });
+
+    this.manageStudentTableBody.querySelectorAll('.btn-del-std').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (confirm('이 학생을 명단에서 삭제하시겠습니까?')) {
+          this.students = this.students.filter(s => s.id !== btn.dataset.id);
+          this.saveStorage('recorder_students', this.students);
+          this.populateClassDropdown();
+          this.renderManageStudents();
+          this.showToast('학생이 명단에서 삭제되었습니다.', 'success');
+        }
+      });
+    });
+  }
+
+  handleAddStudent(e) {
+    e.preventDefault();
+    const className = this.newStudentClass.value.trim();
+    const number = Number(this.newStudentNum.value);
+    const name = this.newStudentName.value.trim();
+    const pin = this.newStudentPin.value.trim() || '0000';
+
+    if (!className || !name || !number) return;
+
+    const newStudent = {
+      id: 'std-' + Date.now().toString().slice(-4),
+      className: className,
+      number: number,
+      name: name,
+      pin: pin,
+      createdAt: new Date().toISOString().split('T')[0]
+    };
+
+    this.students.push(newStudent);
+    this.saveStorage('recorder_students', this.students);
+    this.populateClassDropdown();
+    this.renderManageStudents();
+    this.addStudentModal.style.display = 'none';
+    this.showToast(`${name} 학생이 등록되었습니다!`, 'success');
+
+    if (this.appsScriptUrl) {
+      this.sendActionToSheet('addStudent', newStudent);
+    }
+  }
+
+  // 잘못 등록된 기록 정정 및 삭제
+  renderManageRecords() {
+    this.manageRecordsTableBody.innerHTML = '';
+    if (this.records.length === 0) {
+      this.manageRecordsTableBody.innerHTML = `<tr><td colspan="8" class="text-center text-muted" style="padding:20px;">등록된 기록이 없습니다.</td></tr>`;
+      return;
+    }
+
+    this.records.slice(0, 50).forEach(rec => {
+      const student = this.students.find(s => s.id === rec.studentId) || { name: '알 수 없음' };
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${rec.createdAt}</td>
+        <td><strong>${this.escapeHtml(student.name)}</strong></td>
+        <td>${this.escapeHtml(rec.songTitle)}</td>
+        <td>${this.escapeHtml(rec.focusArea)}</td>
+        <td>${rec.count}회</td>
+        <td>${this.escapeHtml(rec.selfEval)}</td>
+        <td>${this.escapeHtml(rec.comment || '-')}</td>
+        <td>
+          <button type="button" class="btn btn-xs btn-outline text-accent btn-del-rec" data-id="${rec.id}">
+            삭제
+          </button>
+        </td>
+      `;
+      this.manageRecordsTableBody.appendChild(tr);
+    });
+
+    this.manageRecordsTableBody.querySelectorAll('.btn-del-rec').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (confirm('이 기록을 삭제하시겠습니까? (삭제된 기록은 통계에서 제외됩니다)')) {
+          this.records = this.records.filter(r => r.id !== btn.dataset.id);
+          this.saveStorage('recorder_records', this.records);
+          this.renderManageRecords();
+          this.showToast('연습 기록이 삭제되었습니다.', 'success');
+
+          if (this.appsScriptUrl) {
+            this.sendActionToSheet('deleteRecord', { recordId: btn.dataset.id });
+          }
+        }
+      });
+    });
+  }
+
+  // ==========================================
+  // 9. 구글 스프레드시트 연동 및 통신 (Apps Script)
+  // ==========================================
+  updateSheetStatusBadge() {
+    if (this.appsScriptUrl) {
+      this.sheetStatusIndicator.className = 'status-indicator status-connected';
+      this.sheetStatusText.textContent = '구글 스프레드시트 연동 활성화됨';
+    } else {
+      this.sheetStatusIndicator.className = 'status-indicator status-local';
+      this.sheetStatusText.textContent = '로컬 브라우저 저장소 모드로 작동 중입니다. (시트 미연동)';
+    }
+  }
+
+  async handleSaveSheetUrl(e) {
+    e.preventDefault();
+    const url = this.appsScriptUrlInput.value.trim();
+
+    if (!url) {
+      this.appsScriptUrl = '';
+      localStorage.removeItem('recorder_apps_script_url');
+      this.updateSheetStatusBadge();
+      this.showToast('시트 연동이 해제되어 로컬 저장소 모드로 전환되었습니다.', 'success');
+      return;
+    }
+
+    if (!url.startsWith('https://script.google.com/macros/s/')) {
+      this.showToast('올바른 Google Apps Script 웹 앱 배포 URL 형식이 아닙니다.', 'error');
+      return;
+    }
+
+    this.showToast('구글 스프레드시트 연결 테스트 중...', 'info');
+
+    try {
+      // GET 핑 테스트
+      const resp = await fetch(`${url}?action=ping`, { mode: 'no-cors' });
+      // no-cors 특성상 상태 코드는 불투명(opaque)하지만 도메인 연결 시 예외가 발생하지 않음
+      this.appsScriptUrl = url;
+      localStorage.setItem('recorder_apps_script_url', url);
+      this.updateSheetStatusBadge();
+      this.showToast('연동 주소가 저장되었습니다. 다시 로그인하면 시트 기록을 불러옵니다.', 'info');
+    } catch (err) {
+      console.warn('Sheet ping warning:', err);
+      // fallback으로 저장
+      this.appsScriptUrl = url;
+      localStorage.setItem('recorder_apps_script_url', url);
+      this.updateSheetStatusBadge();
+      this.showToast('URL이 저장되었습니다. 첫 기록 저장 시 데이터가 전달됩니다.', 'success');
+    }
+  }
+
+  // Apps Script는 cross-origin POST 응답에 CORS 헤더를 제공하지 않으므로
+  // no-cors로 전송합니다. opaque 응답은 저장 성공을 증명하지 않습니다.
+  async postToSheet(action, payload) {
+    if (!this.appsScriptUrl) return false;
+    try {
+      await fetch(this.appsScriptUrl, {
+        method: 'POST', mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action, payload })
+      });
+      console.info('시트 전송 요청 완료(저장 확인 아님):', action);
+      return true;
+    } catch (error) {
+      console.error('시트 전송 요청 실패:', action, error);
+      return false;
+    }
+  }
+
+  async sendRecordToSheet(record) {
+    return this.postToSheet('saveRecord', record);
+  }
+
+  async sendActionToSheet(action, payload) {
+    return this.postToSheet(action, payload);
+  }
+
+  async syncAllDataWithSheet() {
+    if (!this.appsScriptUrl) {
+      this.showToast('먼저 Google Apps Script URL을 입력해주세요.', 'error');
+      return;
+    }
+    this.showToast('전체 기록 전송 중...', 'info');
+    const sent = await this.postToSheet('syncAll', {
+      students: this.students, songs: this.songs, records: this.records
+    });
+    this.showToast(sent
+      ? '전송 요청을 마쳤습니다. 실제 저장 여부는 구글 시트에서 확인해주세요.'
+      : '전송 실패: 기록은 이 기기에 남아 있습니다.', sent ? 'info' : 'error');
+  }
+
+  // ==========================================
+  // 10. 유틸리티 함수
+  // ==========================================
+  showToast(message, type = 'info') {
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    
+    let icon = 'ℹ️';
+    if (type === 'success') icon = '✅';
+    if (type === 'error') icon = '⚠️';
+
+    toast.innerHTML = `<span>${icon}</span><span>${this.escapeHtml(message)}</span>`;
+    this.toastContainer.appendChild(toast);
+
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateY(16px)';
+      toast.style.transition = '0.3s';
+      setTimeout(() => toast.remove(), 300);
+    }, 2800);
+  }
+
+  escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+}
+
+// ==========================================
+// 11. DOMContentLoaded 시점 인스턴스 실행
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+  window.recorderApp = new RecorderApp();
+});
+
+</script>
+</body>
+</html>
